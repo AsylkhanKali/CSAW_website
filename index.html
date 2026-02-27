@@ -8,1345 +8,666 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #030609;
-    --bg-2: #080d12;
-    --bg-3: #0d1520;
-    --surface: #0f1a27;
-    --surface-2: #162030;
-    --border: #1a2d40;
-    --border-2: #243d55;
-    --cyan: #00d4ff;
-    --cyan-dim: #0097b8;
-    --cyan-glow: rgba(0, 212, 255, 0.15);
-    --cyan-glow-strong: rgba(0, 212, 255, 0.35);
-    --green: #00ff87;
-    --green-dim: #00c668;
-    --red: #ff3366;
-    --amber: #ffb830;
-    --text: #e8f4fd;
-    --text-2: #8aa8c0;
-    --text-3: #4d7090;
-    --font-display: 'Bebas Neue', sans-serif;
-    --font-body: 'Space Grotesk', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
-    --radius: 6px;
-    --radius-lg: 12px;
-    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  ::selection { background: var(--cyan-glow-strong); color: var(--cyan); }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
-
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    height: 64px;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 40px;
-    background: rgba(3, 6, 9, 0.8);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid var(--border);
-    transition: var(--transition);
-  }
-
-  .nav-logo {
-    display: flex; align-items: center; gap: 12px;
-    text-decoration: none;
-  }
-
-  .logo-mark {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan-dim) 100%);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-display);
-    font-size: 14px; color: var(--bg);
-    letter-spacing: 0.05em;
-    flex-shrink: 0;
-    box-shadow: 0 0 20px var(--cyan-glow-strong);
-  }
-
-  .logo-text {
-    font-family: var(--font-display);
-    font-size: 22px; letter-spacing: 0.15em;
-    color: var(--text);
-  }
-
-  .logo-year {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--cyan);
-    background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.3);
-    padding: 2px 8px; border-radius: 20px;
-  }
-
-  .nav-links {
-    display: flex; align-items: center; gap: 8px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: var(--font-mono);
-    font-size: 12px; color: var(--text-2);
-    text-decoration: none; padding: 6px 14px;
-    border-radius: var(--radius);
-    transition: var(--transition);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .nav-links a:hover { color: var(--text); background: var(--surface); }
-
-  .nav-cta {
-    background: var(--cyan) !important;
-    color: var(--bg) !important;
-    font-weight: 600 !important;
-    box-shadow: 0 0 20px rgba(0,212,255,0.3);
-  }
-  .nav-cta:hover { box-shadow: 0 0 30px rgba(0,212,255,0.5) !important; transform: translateY(-1px); }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 120px 40px 80px;
-    position: relative; overflow: hidden;
-  }
-
-  .hero-bg {
-    position: absolute; inset: 0; z-index: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 60% -10%, rgba(0,212,255,0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(0,255,135,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 30% at 90% 60%, rgba(255,51,102,0.04) 0%, transparent 60%);
-  }
-
-  .hero-grid {
-    position: absolute; inset: 0; z-index: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
-  }
-
-  /* Scanline effect */
-  .hero::after {
-    content: '';
-    position: absolute; inset: 0; z-index: 1;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.03) 2px,
-      rgba(0,0,0,0.03) 4px
-    );
-    pointer-events: none;
-  }
-
-  .hero-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
-
-  .hero-eyebrow {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 24px;
-    font-family: var(--font-mono);
-    font-size: 12px; color: var(--cyan);
-    letter-spacing: 0.15em; text-transform: uppercase;
-  }
-
-  .hero-eyebrow::before {
-    content: '';
-    width: 32px; height: 1px;
-    background: var(--cyan);
-    box-shadow: 0 0 8px var(--cyan);
-  }
-
-  .hero-eyebrow span {
-    background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.3);
-    padding: 4px 12px; border-radius: 20px;
-    animation: pulse-border 3s ease-in-out infinite;
-  }
-
-  @keyframes pulse-border {
-    0%, 100% { border-color: rgba(0,212,255,0.3); }
-    50% { border-color: rgba(0,212,255,0.7); box-shadow: 0 0 12px rgba(0,212,255,0.2); }
-  }
-
-  .hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(80px, 12vw, 180px);
-    line-height: 0.9;
-    letter-spacing: 0.02em;
-    margin-bottom: 8px;
-    background: linear-gradient(135deg, #ffffff 0%, #8aa8c0 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-title .accent {
-    background: linear-gradient(135deg, var(--cyan) 0%, var(--green) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: none;
-    filter: drop-shadow(0 0 30px rgba(0,212,255,0.4));
-  }
-
-  .hero-subtitle {
-    font-family: var(--font-display);
-    font-size: clamp(20px, 3vw, 40px);
-    letter-spacing: 0.15em;
-    color: var(--text-2);
-    margin-bottom: 32px;
-    text-transform: uppercase;
-  }
-
-  .hero-desc {
-    max-width: 560px;
-    font-size: 16px; color: var(--text-2);
-    line-height: 1.7; margin-bottom: 48px;
-  }
-
-  .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: var(--cyan);
-    color: var(--bg);
-    font-family: var(--font-mono);
-    font-size: 13px; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 14px 28px; border-radius: var(--radius);
-    text-decoration: none;
-    box-shadow: 0 0 30px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
-    transition: var(--transition);
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 50px rgba(0,212,255,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
-  }
-
-  .btn-secondary {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: transparent;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 13px 28px; border-radius: var(--radius);
-    border: 1px solid var(--border-2);
-    text-decoration: none;
-    transition: var(--transition);
-  }
-  .btn-secondary:hover {
-    border-color: var(--cyan);
-    color: var(--cyan);
-    background: rgba(0,212,255,0.05);
-  }
-
-  .hero-stats {
-    display: flex; gap: 48px; margin-top: 80px;
-    padding-top: 48px;
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-
-  .stat { display: flex; flex-direction: column; gap: 4px; }
-
-  .stat-number {
-    font-family: var(--font-display);
-    font-size: 48px; line-height: 1;
-    background: linear-gradient(135deg, var(--cyan), var(--green));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.15em;
-  }
-
-  /* Hero right: floating terminal */
-  .hero-terminal {
-    position: absolute; right: 40px; top: 50%;
-    transform: translateY(-50%);
-    width: 420px;
-    background: rgba(8, 13, 18, 0.9);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,212,255,0.05), inset 0 1px 0 rgba(255,255,255,0.04);
-    overflow: hidden;
-    animation: float 6s ease-in-out infinite;
-    z-index: 3;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(-50%) translateY(0px); }
-    50% { transform: translateY(-50%) translateY(-12px); }
-  }
-
-  .terminal-bar {
-    display: flex; align-items: center; gap: 8px;
-    padding: 12px 16px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .t-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .t-dot.r { background: #ff5f57; }
-  .t-dot.y { background: #febc2e; }
-  .t-dot.g { background: #28c840; }
-
-  .terminal-title {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    margin-left: 4px; letter-spacing: 0.05em;
-  }
-
-  .terminal-body {
-    padding: 20px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    line-height: 1.8;
-  }
-
-  .t-line { display: flex; gap: 8px; margin-bottom: 2px; }
-  .t-prompt { color: var(--green); }
-  .t-cmd { color: var(--text); }
-  .t-comment { color: var(--text-3); }
-  .t-output { color: var(--cyan); padding-left: 4px; }
-  .t-output.success { color: var(--green); }
-  .t-output.warn { color: var(--amber); }
-  .t-cursor {
-    display: inline-block; width: 8px; height: 14px;
-    background: var(--cyan);
-    animation: blink 1.2s step-end infinite;
-    vertical-align: middle;
-  }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-  /* EVENT META STRIP */
-  .event-strip {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 40px;
-    display: flex; align-items: center; justify-content: center; gap: 48px;
-    flex-wrap: wrap;
-  }
-
-  .strip-item {
-    display: flex; align-items: center; gap: 10px;
-    font-family: var(--font-mono);
-    font-size: 12px; color: var(--text-2);
-    letter-spacing: 0.05em;
-  }
-
-  .strip-item svg { color: var(--cyan); flex-shrink: 0; }
-  .strip-item strong { color: var(--text); }
-
-  /* SECTION COMMON */
-  section { padding: 120px 40px; }
-  .section-inner { max-width: 1200px; margin: 0 auto; }
-
-  .section-label {
-    display: flex; align-items: center; gap: 12px;
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--cyan);
-    letter-spacing: 0.2em; text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .section-label::before {
-    content: ''; width: 24px; height: 1px;
-    background: var(--cyan);
-  }
-  .section-label .idx { color: var(--text-3); margin-left: 4px; }
-
-  h2.section-title {
-    font-family: var(--font-display);
-    font-size: clamp(40px, 5vw, 72px);
-    line-height: 1;
-    letter-spacing: 0.03em;
-    margin-bottom: 16px;
-    color: var(--text);
-  }
-
-  .section-desc {
-    font-size: 17px; color: var(--text-2);
-    max-width: 640px; line-height: 1.7;
-    margin-bottom: 64px;
-  }
-
-  /* ABOUT */
-  .about { background: var(--bg-2); }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 64px; align-items: center;
-  }
-
-  .about-copy p {
-    font-size: 16px; color: var(--text-2);
-    line-height: 1.8; margin-bottom: 20px;
-  }
-  .about-copy p strong { color: var(--text); }
-
-  .about-metrics {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 2px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-
-  .metric-cell {
-    background: var(--surface);
-    padding: 32px;
-    transition: var(--transition);
-    cursor: default;
-  }
-  .metric-cell:hover { background: var(--surface-2); }
-
-  .metric-cell:nth-child(1) { border-radius: var(--radius-lg) 0 0 0; }
-  .metric-cell:nth-child(2) { border-radius: 0 var(--radius-lg) 0 0; }
-  .metric-cell:nth-child(3) { border-radius: 0 0 0 var(--radius-lg); }
-  .metric-cell:nth-child(4) { border-radius: 0 0 var(--radius-lg) 0; }
-
-  .metric-value {
-    font-family: var(--font-display);
-    font-size: 52px; line-height: 1;
-    color: var(--cyan);
-    margin-bottom: 8px;
-  }
-
-  .metric-desc {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.12em;
-  }
-
-  /* COMPETITIONS */
-  .competitions { background: var(--bg); }
-
-  .competitions-header {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    margin-bottom: 48px; gap: 24px; flex-wrap: wrap;
-  }
-
-  .comp-filter {
-    display: flex; gap: 8px; flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-2);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 16px; cursor: pointer;
-    transition: var(--transition);
-    letter-spacing: 0.08em; text-transform: uppercase;
-  }
-
-  .filter-btn:hover, .filter-btn.active {
-    color: var(--cyan);
-    border-color: rgba(0,212,255,0.4);
-    background: rgba(0,212,255,0.08);
-  }
-
-  .comp-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-
-  .comp-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    cursor: pointer;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
-    text-decoration: none;
-    display: block;
-  }
-
-  .comp-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--card-accent, var(--cyan)), transparent);
-    opacity: 0;
-    transition: var(--transition);
-  }
-
-  .comp-card::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 60% 60% at 50% -10%, var(--card-glow, rgba(0,212,255,0.06)) 0%, transparent 100%);
-    opacity: 0;
-    transition: var(--transition);
-    pointer-events: none;
-  }
-
-  .comp-card:hover {
-    border-color: var(--card-accent, var(--cyan));
-    transform: translateY(-3px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--card-accent, var(--cyan));
-  }
-  .comp-card:hover::before, .comp-card:hover::after { opacity: 1; }
-
-  .comp-card.featured {
-    grid-column: span 2;
-    background: linear-gradient(135deg, var(--surface) 0%, var(--bg-3) 100%);
-  }
-
-  .comp-tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--font-mono);
-    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-    padding: 4px 10px; border-radius: 20px;
-    margin-bottom: 16px;
-    border: 1px solid;
-  }
-
-  .tag-ctf { color: #00d4ff; border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.08); --card-accent: #00d4ff; --card-glow: rgba(0,212,255,0.06); }
-  .tag-hw { color: #ff3366; border-color: rgba(255,51,102,0.3); background: rgba(255,51,102,0.08); }
-  .tag-ai { color: #b57aff; border-color: rgba(181,122,255,0.3); background: rgba(181,122,255,0.08); }
-  .tag-bio { color: #00ff87; border-color: rgba(0,255,135,0.3); background: rgba(0,255,135,0.08); }
-  .tag-policy { color: #ffb830; border-color: rgba(255,184,48,0.3); background: rgba(255,184,48,0.08); }
-  .tag-research { color: #ff6b35; border-color: rgba(255,107,53,0.3); background: rgba(255,107,53,0.08); }
-
-  .comp-card[data-type="ctf"] { --card-accent: #00d4ff; --card-glow: rgba(0,212,255,0.06); }
-  .comp-card[data-type="hw"] { --card-accent: #ff3366; --card-glow: rgba(255,51,102,0.06); }
-  .comp-card[data-type="ai"] { --card-accent: #b57aff; --card-glow: rgba(181,122,255,0.06); }
-  .comp-card[data-type="bio"] { --card-accent: #00ff87; --card-glow: rgba(0,255,135,0.06); }
-  .comp-card[data-type="policy"] { --card-accent: #ffb830; --card-glow: rgba(255,184,48,0.06); }
-  .comp-card[data-type="research"] { --card-accent: #ff6b35; --card-glow: rgba(255,107,53,0.06); }
-
-  .comp-icon {
-    width: 44px; height: 44px;
-    border-radius: var(--radius);
-    background: rgba(0,212,255,0.1);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    margin-bottom: 16px;
-    border: 1px solid rgba(0,212,255,0.2);
-  }
-
-  .comp-name {
-    font-size: 17px; font-weight: 600;
-    color: var(--text);
-    margin-bottom: 8px;
-    line-height: 1.3;
-  }
-
-  .comp-desc {
-    font-size: 13px; color: var(--text-2);
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-
-  .comp-meta {
-    display: flex; align-items: center; justify-content: space-between;
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.08em;
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
-    margin-top: auto;
-  }
-
-  .comp-arrow {
-    width: 28px; height: 28px;
-    border: 1px solid var(--border-2);
-    border-radius: var(--radius);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-3);
-    transition: var(--transition);
-  }
-  .comp-card:hover .comp-arrow {
-    border-color: var(--card-accent, var(--cyan));
-    color: var(--card-accent, var(--cyan));
-    background: rgba(0,212,255,0.1);
-  }
-
-  /* REGIONS */
-  .regions { background: var(--bg-2); }
-
-  .regions-map {
-    position: relative;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-bottom: 48px;
-  }
-
-  .map-overlay {
-    padding: 48px;
-    display: grid; grid-template-columns: repeat(5, 1fr);
-    gap: 2px;
-  }
-
-  .region-card {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px 20px;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none; display: block;
-    text-align: center;
-  }
-
-  .region-card:hover {
-    background: var(--surface-2);
-    border-color: var(--cyan);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 20px var(--cyan-glow);
-  }
-
-  .region-flag { font-size: 32px; margin-bottom: 12px; display: block; }
-
-  .region-name {
-    font-family: var(--font-display);
-    font-size: 20px; letter-spacing: 0.1em;
-    color: var(--text); margin-bottom: 4px;
-  }
-
-  .region-host {
-    font-family: var(--font-mono);
-    font-size: 10px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.1em;
-  }
-
-  .region-badge {
-    display: inline-flex; margin-top: 10px;
-    font-family: var(--font-mono); font-size: 10px;
-    color: var(--cyan); background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.2);
-    padding: 3px 8px; border-radius: 20px;
-    letter-spacing: 0.08em; text-transform: uppercase;
-  }
-
-  /* TIMELINE / AGENDA */
-  .agenda { background: var(--bg-3); }
-
-  .timeline {
-    display: flex; flex-direction: column; gap: 0;
-    position: relative;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 140px; top: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(180deg, transparent 0%, var(--border-2) 10%, var(--border-2) 90%, transparent 100%);
-  }
-
-  .tl-item {
-    display: flex; gap: 0;
-    padding: 32px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .tl-item:last-child { border-bottom: none; }
-
-  .tl-date {
-    width: 140px; flex-shrink: 0;
-    padding-right: 32px; text-align: right;
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.1em;
-    padding-top: 4px;
-  }
-
-  .tl-dot-wrap {
-    width: 24px; flex-shrink: 0;
-    display: flex; justify-content: center; align-items: flex-start;
-    padding-top: 8px; position: relative; z-index: 1;
-  }
-
-  .tl-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--bg-3);
-    border: 2px solid var(--cyan);
-    box-shadow: 0 0 10px var(--cyan-glow-strong);
-  }
-
-  .tl-content {
-    flex: 1; padding-left: 32px;
-  }
-
-  .tl-phase {
-    font-family: var(--font-mono);
-    font-size: 10px; color: var(--cyan);
-    text-transform: uppercase; letter-spacing: 0.15em;
-    margin-bottom: 6px;
-  }
-
-  .tl-title {
-    font-size: 18px; font-weight: 600; color: var(--text);
-    margin-bottom: 8px;
-  }
-
-  .tl-desc {
-    font-size: 14px; color: var(--text-2); line-height: 1.6;
-  }
-
-  /* SPONSORS */
-  .sponsors { background: var(--bg); }
-
-  .sponsor-tiers {
-    display: flex; flex-direction: column; gap: 48px;
-  }
-
-  .sponsor-tier-label {
-    display: flex; align-items: center; gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .tier-name {
-    font-family: var(--font-display);
-    font-size: 24px; letter-spacing: 0.1em;
-    color: var(--text);
-  }
-
-  .tier-badge {
-    font-family: var(--font-mono);
-    font-size: 10px; letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 4px 12px; border-radius: 20px;
-    border: 1px solid;
-  }
-
-  .tier-diamond .tier-badge { color: #b9f2ff; border-color: rgba(185,242,255,0.4); background: rgba(185,242,255,0.05); }
-  .tier-gold .tier-badge { color: var(--amber); border-color: rgba(255,184,48,0.4); background: rgba(255,184,48,0.05); }
-  .tier-silver .tier-badge { color: #c0c0c0; border-color: rgba(192,192,192,0.4); background: rgba(192,192,192,0.05); }
-
-  .sponsor-row {
-    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
-  }
-
-  .sponsor-logo {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex; align-items: center; justify-content: center;
-    transition: var(--transition); cursor: pointer;
-    text-decoration: none;
-  }
-
-  .sponsor-logo:hover {
-    border-color: rgba(0,212,255,0.3);
-    background: var(--surface-2);
-    box-shadow: 0 0 20px rgba(0,212,255,0.1);
-  }
-
-  .tier-diamond .sponsor-logo { height: 80px; min-width: 200px; padding: 24px 32px; }
-  .tier-gold .sponsor-logo { height: 64px; min-width: 160px; padding: 16px 24px; }
-  .tier-silver .sponsor-logo { height: 52px; min-width: 120px; padding: 12px 20px; }
-
-  .sponsor-name {
-    font-family: var(--font-display);
-    font-size: 18px; letter-spacing: 0.1em; color: var(--text-2);
-  }
-  .tier-diamond .sponsor-name { font-size: 22px; }
-
-  .sponsor-cta {
-    margin-top: 48px;
-    background: linear-gradient(135deg, var(--surface) 0%, var(--bg-3) 100%);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 40px;
-    display: flex; align-items: center; justify-content: space-between; gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .sponsor-cta-text h3 {
-    font-family: var(--font-display);
-    font-size: 28px; letter-spacing: 0.05em;
-    color: var(--text); margin-bottom: 8px;
-  }
-  .sponsor-cta-text p { font-size: 14px; color: var(--text-2); }
-
-  /* REGISTRATION */
-  .registration {
-    background: var(--bg-2);
-    position: relative; overflow: hidden;
-  }
-
-  .registration::before {
-    content: '';
-    position: absolute;
-    top: -200px; left: 50%; transform: translateX(-50%);
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .reg-cards {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 16px; margin-bottom: 48px;
-  }
-
-  .reg-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    position: relative; overflow: hidden;
-    transition: var(--transition);
-  }
-
-  .reg-card.featured {
-    border-color: rgba(0,212,255,0.4);
-    background: linear-gradient(135deg, rgba(0,212,255,0.05) 0%, var(--surface) 60%);
-  }
-
-  .reg-card.featured::before {
-    content: 'RECOMMENDED';
-    position: absolute; top: 16px; right: 16px;
-    font-family: var(--font-mono);
-    font-size: 9px; letter-spacing: 0.15em;
-    color: var(--cyan);
-    background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.3);
-    padding: 3px 8px; border-radius: 20px;
-  }
-
-  .reg-card:hover {
-    border-color: var(--border-2);
-    transform: translateY(-2px);
-    box-shadow: 0 16px 32px rgba(0,0,0,0.3);
-  }
-
-  .reg-card-type {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.15em;
-    margin-bottom: 8px;
-  }
-
-  .reg-card-title {
-    font-family: var(--font-display);
-    font-size: 28px; letter-spacing: 0.05em;
-    color: var(--text); margin-bottom: 20px;
-  }
-
-  .reg-features {
-    list-style: none; margin-bottom: 32px;
-    display: flex; flex-direction: column; gap: 12px;
-  }
-
-  .reg-features li {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 14px; color: var(--text-2);
-  }
-
-  .reg-features li::before {
-    content: ''; flex-shrink: 0;
-    width: 16px; height: 16px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%2300d4ff' d='M13.5 3.5L6 11 2.5 7.5l-1 1L6 13l8.5-8.5z'/%3E%3C/svg%3E") center/contain no-repeat;
-  }
-
-  /* NEWS */
-  .news { background: var(--bg); }
-
-  .news-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
-  }
-
-  .news-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none; display: block;
-  }
-
-  .news-card:hover {
-    border-color: var(--border-2);
-    transform: translateY(-2px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-  }
-
-  .news-card-img {
-    height: 200px;
-    background: linear-gradient(135deg, var(--bg-3) 0%, var(--surface-2) 100%);
-    position: relative; overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 48px;
-  }
-
-  .news-card-img::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(to bottom, transparent 60%, rgba(8,13,18,0.8) 100%);
-  }
-
-  .news-card-body { padding: 24px; }
-
-  .news-date {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.1em;
-    margin-bottom: 8px;
-  }
-
-  .news-title {
-    font-size: 16px; font-weight: 600; color: var(--text);
-    margin-bottom: 10px; line-height: 1.4;
-  }
-
-  .news-excerpt {
-    font-size: 13px; color: var(--text-2);
-    line-height: 1.6;
-  }
-
-  .news-sidebar {
-    display: flex; flex-direction: column; gap: 16px;
-  }
-
-  .news-mini {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    cursor: pointer; transition: var(--transition);
-    text-decoration: none; display: block;
-  }
-
-  .news-mini:hover { border-color: var(--border-2); background: var(--surface-2); }
-
-  /* CONTACT / FOOTER */
-  .contact {
-    background: var(--bg-3);
-    border-top: 1px solid var(--border);
-  }
-
-  .contact-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 80px; align-items: start;
-  }
-
-  .contact-info h3 {
-    font-family: var(--font-display);
-    font-size: 36px; letter-spacing: 0.05em;
-    color: var(--text); margin-bottom: 16px;
-  }
-
-  .contact-info p {
-    font-size: 15px; color: var(--text-2);
-    line-height: 1.7; margin-bottom: 32px;
-  }
-
-  .contact-links { display: flex; flex-direction: column; gap: 12px; }
-
-  .contact-link {
-    display: flex; align-items: center; gap: 12px;
-    font-family: var(--font-mono);
-    font-size: 13px; color: var(--text-2);
-    text-decoration: none;
-    transition: var(--transition);
-  }
-  .contact-link:hover { color: var(--cyan); }
-
-  .contact-link-icon {
-    width: 36px; height: 36px; flex-shrink: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-  }
-
-  .contact-form { display: flex; flex-direction: column; gap: 16px; }
-
-  .form-group { display: flex; flex-direction: column; gap: 8px; }
-
-  .form-label {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.12em;
-  }
-
-  .form-input, .form-textarea {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 14px;
-    outline: none;
-    transition: var(--transition);
-    width: 100%;
-  }
-
-  .form-input:focus, .form-textarea:focus {
-    border-color: var(--cyan);
-    box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
-  }
-
-  .form-textarea { height: 120px; resize: vertical; }
-
-  /* FOOTER */
-  footer {
-    background: var(--bg);
-    border-top: 1px solid var(--border);
-    padding: 48px 40px;
-  }
-
-  .footer-inner {
-    max-width: 1200px; margin: 0 auto;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 24px;
-  }
-
-  .footer-brand { display: flex; flex-direction: column; gap: 6px; }
-  .footer-brand .logo-text { font-size: 18px; }
-
-  .footer-tagline {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    letter-spacing: 0.08em;
-  }
-
-  .footer-links {
-    display: flex; gap: 24px; list-style: none; flex-wrap: wrap;
-  }
-
-  .footer-links a {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    text-decoration: none; letter-spacing: 0.08em;
-    text-transform: uppercase; transition: var(--transition);
-  }
-  .footer-links a:hover { color: var(--cyan); }
-
-  .footer-bottom {
-    max-width: 1200px; margin: 32px auto 0;
-    padding-top: 24px; border-top: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 16px;
-  }
-
-  .footer-copy {
-    font-family: var(--font-mono);
-    font-size: 11px; color: var(--text-3);
-    letter-spacing: 0.05em;
-  }
-
-  /* SCROLL ANIMATION */
-  .reveal {
-    opacity: 0; transform: translateY(24px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible {
-    opacity: 1; transform: translateY(0);
-  }
-
-  /* GLOW DIVIDER */
-  .glow-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, var(--cyan) 50%, transparent 100%);
-    opacity: 0.3;
-    margin: 0;
-  }
-
-  /* MOBILE NAV */
-  .nav-mobile-toggle { display: none; }
-
-  /* responsive */
-  @media (max-width: 1100px) {
-    .hero-terminal { display: none; }
-    .comp-grid { grid-template-columns: repeat(2, 1fr); }
-    .comp-card.featured { grid-column: span 2; }
-  }
-
-  @media (max-width: 768px) {
-    nav { padding: 0 20px; }
-    .nav-links { display: none; }
-    section { padding: 80px 20px; }
-    .hero { padding: 100px 20px 60px; }
-    .hero-stats { gap: 24px; }
-    .about-grid { grid-template-columns: 1fr; }
-    .comp-grid { grid-template-columns: 1fr; }
-    .comp-card.featured { grid-column: span 1; }
-    .map-overlay { grid-template-columns: repeat(3, 1fr); padding: 24px; }
-    .reg-cards { grid-template-columns: 1fr; }
-    .news-grid { grid-template-columns: 1fr; }
-    .contact-grid { grid-template-columns: 1fr; gap: 48px; }
-    .event-strip { gap: 24px; padding: 16px 20px; }
-    .footer-inner { flex-direction: column; align-items: flex-start; }
-  }
-
-  /* Noise overlay */
-  .noise {
-    position: fixed; inset: 0; z-index: 9999;
-    pointer-events: none;
-    opacity: 0.025;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 256px 256px;
-  }
-
-  /* BINARY RAIN CANVAS */
-  #binary-canvas {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.07;
-  }
-
-  /* GLITCH TEXT EFFECT */
-  .glitch {
-    position: relative;
-  }
-  .glitch::before,
-  .glitch::after {
-    content: attr(data-text);
-    position: absolute; top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: transparent;
-  }
-  .glitch::before {
-    left: 2px;
-    text-shadow: -2px 0 var(--red);
-    clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
-    animation: glitch-1 4s infinite linear;
-    opacity: 0;
-  }
-  .glitch::after {
-    left: -2px;
-    text-shadow: 2px 0 var(--cyan);
-    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
-    animation: glitch-2 4s infinite linear;
-    opacity: 0;
-  }
-  @keyframes glitch-1 {
-    0%, 90%, 100% { opacity: 0; transform: none; }
-    92% { opacity: 1; transform: translate(-2px, 1px) skewX(-1deg); }
-    94% { opacity: 1; transform: translate(2px, -1px) skewX(1deg); }
-    96% { opacity: 0; }
-  }
-  @keyframes glitch-2 {
-    0%, 90%, 100% { opacity: 0; transform: none; }
-    93% { opacity: 1; transform: translate(2px, 2px) skewX(1deg); }
-    95% { opacity: 1; transform: translate(-2px, -1px) skewX(-1deg); }
-    97% { opacity: 0; }
-  }
-
-  /* FLOATING BINARY BITS scattered in hero */
-  .binary-float {
-    position: absolute;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--cyan);
-    pointer-events: none;
-    animation: floatUp var(--dur, 8s) var(--delay, 0s) ease-in infinite;
-    opacity: 0;
-    z-index: 1;
-    user-select: none;
-  }
-  @keyframes floatUp {
-    0% { opacity: 0; transform: translateY(0px); }
-    10% { opacity: var(--op, 0.4); }
-    90% { opacity: var(--op, 0.4); }
-    100% { opacity: 0; transform: translateY(-120px); }
-  }
-
-  /* HEX GRID PULSE */
-  .hex-pulse {
-    position: absolute;
-    width: 200px; height: 200px;
-    border: 1px solid rgba(0,212,255,0.15);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    animation: hexPulse 6s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes hexPulse {
-    0%, 100% { transform: scale(1); opacity: 0.3; box-shadow: none; }
-    50% { transform: scale(1.05); opacity: 0.6; box-shadow: 0 0 40px rgba(0,212,255,0.2); }
-  }
-
-  /* SCAN LINE SWEEP */
-  .scanline-sweep {
-    position: absolute; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.6), transparent);
-    animation: scanSweep 5s ease-in-out infinite;
-    pointer-events: none; z-index: 2;
-    box-shadow: 0 0 12px rgba(0,212,255,0.4);
-  }
-  @keyframes scanSweep {
-    0% { top: 0%; opacity: 0; }
-    5% { opacity: 1; }
-    95% { opacity: 0.6; }
-    100% { top: 100%; opacity: 0; }
-  }
-
-  /* CYBER CORNER DECORATIONS */
-  .cyber-corner {
-    position: absolute;
-    width: 20px; height: 20px;
-    pointer-events: none;
-  }
-  .cyber-corner::before, .cyber-corner::after {
-    content: '';
-    position: absolute;
-    background: var(--cyan);
-    box-shadow: 0 0 6px var(--cyan);
-  }
-  .cyber-corner.tl { top: 0; left: 0; }
-  .cyber-corner.tl::before { top: 0; left: 0; width: 100%; height: 1px; }
-  .cyber-corner.tl::after { top: 0; left: 0; width: 1px; height: 100%; }
-  .cyber-corner.tr { top: 0; right: 0; }
-  .cyber-corner.tr::before { top: 0; right: 0; width: 100%; height: 1px; }
-  .cyber-corner.tr::after { top: 0; right: 0; width: 1px; height: 100%; }
-  .cyber-corner.bl { bottom: 0; left: 0; }
-  .cyber-corner.bl::before { bottom: 0; left: 0; width: 100%; height: 1px; }
-  .cyber-corner.bl::after { bottom: 0; left: 0; width: 1px; height: 100%; }
-  .cyber-corner.br { bottom: 0; right: 0; }
-  .cyber-corner.br::before { bottom: 0; right: 0; width: 100%; height: 1px; }
-  .cyber-corner.br::after { bottom: 0; right: 0; width: 1px; height: 100%; }
-
-  /* TYPING ANIMATION for section labels */
-  .type-reveal {
-    overflow: hidden;
-    white-space: nowrap;
-    border-right: 2px solid var(--cyan);
-    width: 0;
-    animation: typeIn 0.8s steps(30, end) forwards, blinkCursor 1s step-end 5;
-  }
-  @keyframes typeIn {
-    from { width: 0; }
-    to { width: 100%; }
-  }
-  @keyframes blinkCursor {
-    0%, 100% { border-color: var(--cyan); }
-    50% { border-color: transparent; }
-  }
-
-  /* PARTICLE DOTS */
-  .particle-field {
-    position: absolute; inset: 0;
-    pointer-events: none; overflow: hidden; z-index: 1;
-  }
-  .particle {
-    position: absolute;
-    width: 2px; height: 2px;
-    background: var(--cyan);
-    border-radius: 50%;
-    animation: particleDrift var(--pd, 12s) var(--pdelay, 0s) ease-in-out infinite alternate;
-    opacity: var(--pop, 0.3);
-    box-shadow: 0 0 4px var(--cyan);
-  }
-  @keyframes particleDrift {
-    0% { transform: translate(0, 0); opacity: var(--pop, 0.3); }
-    100% { transform: translate(var(--pdx, 30px), var(--pdy, -40px)); opacity: calc(var(--pop, 0.3) * 0.3); }
-  }
-
-  /* NEON FLICKER */
-  @keyframes neonFlicker {
-    0%, 100% { text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--cyan); }
-    92% { text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--cyan); }
-    93% { text-shadow: none; }
-    94% { text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--cyan); }
-    96% { text-shadow: none; }
-    97% { text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--cyan); }
-  }
-
-  /* PROGRESS BAR SWEEP on stats */
-  .stat-bar {
-    height: 2px;
-    background: var(--border);
-    border-radius: 1px;
-    margin-top: 8px;
-    overflow: hidden;
-    width: 60px;
-  }
-  .stat-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--cyan), var(--green));
-    border-radius: 1px;
-    width: 0%;
-    transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
-    box-shadow: 0 0 6px var(--cyan);
-  }
-
-  /* DATA STREAM in background sections */
-  .data-stream {
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(180deg,
-      transparent 0%,
-      var(--cyan) 20%,
-      var(--green) 40%,
-      var(--cyan) 60%,
-      transparent 100%
-    );
-    opacity: 0.15;
-    animation: streamFlow 3s ease-in-out infinite;
-  }
-  @keyframes streamFlow {
-    0% { transform: translateY(-100%); opacity: 0; }
-    20% { opacity: 0.15; }
-    80% { opacity: 0.15; }
-    100% { transform: translateY(100%); opacity: 0; }
-  }
-
-  /* MATRIX TEXT DECODE effect for hero title */
-  @keyframes matrixReveal {
-    0% { opacity: 0; filter: blur(8px); letter-spacing: 0.5em; }
-    100% { opacity: 1; filter: blur(0); letter-spacing: 0.02em; }
-  }
-  .matrix-reveal {
-    animation: matrixReveal 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
-  }
-  .matrix-reveal-sub {
-    animation: matrixReveal 1.2s 0.3s cubic-bezier(0.4,0,0.2,1) both;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #030609;
+  --bg-2: #080d12;
+  --bg-3: #0d1520;
+  --surface: #0f1a27;
+  --surface-2: #162030;
+  --border: #1a2d40;
+  --border-2: #243d55;
+  --cyan: #00d4ff;
+  --cyan-dim: #0097b8;
+  --cyan-glow: rgba(0,212,255,0.15);
+  --cyan-glow-strong: rgba(0,212,255,0.35);
+  --green: #00ff87;
+  --red: #ff3366;
+  --amber: #ffb830;
+  --text: #e8f4fd;
+  --text-2: #8aa8c0;
+  --text-3: #4d7090;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --radius: 6px;
+  --radius-lg: 12px;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--cyan-glow-strong); color: var(--cyan); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+/* ─── BINARY CANVAS ────────────────────────── */
+#binary-canvas {
+  position: fixed; inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.06;
+}
+
+/* ─── NOISE ────────────────────────────────── */
+.noise {
+  position: fixed; inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ─── NAV ──────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(3,6,9,0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+
+.logo-mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan-dim) 100%);
+  clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 14px; color: var(--bg);
+  flex-shrink: 0;
+  box-shadow: 0 0 20px var(--cyan-glow-strong);
+  transition: box-shadow 0.1s;
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 22px; letter-spacing: 0.15em;
+  color: var(--text);
+}
+
+.logo-year {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--cyan);
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.3);
+  padding: 2px 8px; border-radius: 20px;
+}
+
+.nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--text-2);
+  text-decoration: none; padding: 6px 14px;
+  border-radius: var(--radius);
+  transition: var(--transition);
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface); }
+.nav-cta { background: var(--cyan) !important; color: var(--bg) !important; font-weight: 600 !important; }
+.nav-cta:hover { box-shadow: 0 0 30px rgba(0,212,255,0.5) !important; }
+
+/* ─── HERO ─────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px 40px 80px;
+  position: relative; overflow: hidden;
+  isolation: isolate;
+}
+
+.hero-bg {
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% -10%, rgba(0,212,255,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(0,255,135,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 60%, rgba(255,51,102,0.04) 0%, transparent 60%);
+}
+
+.hero-grid {
+  position: absolute; inset: 0; z-index: -1;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+}
+
+/* scanline texture */
+.hero::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+  pointer-events: none;
+}
+
+.scanline-sweep {
+  position: absolute; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.6), transparent);
+  box-shadow: 0 0 12px rgba(0,212,255,0.4);
+  pointer-events: none; z-index: 1;
+  animation: scanSweep 6s ease-in-out infinite;
+}
+@keyframes scanSweep {
+  0%   { top: 0%;   opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 0.5; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* floating binary bits */
+.binary-float {
+  position: absolute;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--cyan);
+  pointer-events: none; user-select: none;
+  animation: floatUp var(--dur,8s) var(--delay,0s) ease-in infinite;
+  opacity: 0; z-index: 1;
+}
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(0); }
+  10%  { opacity: var(--op,0.4); }
+  90%  { opacity: var(--op,0.4); }
+  100% { opacity: 0; transform: translateY(-100px); }
+}
+
+/* hex pulse rings */
+.hex-pulse {
+  position: absolute; pointer-events: none;
+  border: 1px solid rgba(0,212,255,0.15);
+  clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  animation: hexPulse 6s ease-in-out infinite;
+}
+@keyframes hexPulse {
+  0%,100% { transform: scale(1); opacity: 0.3; }
+  50%     { transform: scale(1.06); opacity: 0.6; }
+}
+
+/* particle field */
+.particle-field { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+.particle {
+  position: absolute; width: 2px; height: 2px;
+  background: var(--cyan); border-radius: 50%;
+  box-shadow: 0 0 4px var(--cyan);
+  animation: particleDrift var(--pd,12s) var(--pdelay,0s) ease-in-out infinite alternate;
+  opacity: var(--pop,0.3);
+}
+@keyframes particleDrift {
+  0%   { transform: translate(0,0); opacity: var(--pop,0.3); }
+  100% { transform: translate(var(--pdx,30px),var(--pdy,-40px)); opacity: calc(var(--pop,0.3)*0.3); }
+}
+
+.hero-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 24px;
+  font-family: var(--font-mono); font-size: 12px; color: var(--cyan);
+  letter-spacing: 0.15em; text-transform: uppercase;
+}
+.hero-eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+.hero-eyebrow span {
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.3);
+  padding: 4px 12px; border-radius: 20px;
+  animation: pulseBorder 3s ease-in-out infinite;
+}
+@keyframes pulseBorder {
+  0%,100% { border-color: rgba(0,212,255,0.3); }
+  50%     { border-color: rgba(0,212,255,0.7); box-shadow: 0 0 12px rgba(0,212,255,0.2); }
+}
+
+/* glitch on title */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(80px,12vw,180px);
+  line-height: 0.9; letter-spacing: 0.02em;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg,#ffffff 0%,#8aa8c0 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  animation: matrixReveal 1.2s cubic-bezier(0.4,0,0.2,1) both;
+}
+@keyframes matrixReveal {
+  0%   { opacity: 0; filter: blur(8px); letter-spacing: 0.3em; }
+  100% { opacity: 1; filter: blur(0); letter-spacing: 0.02em; }
+}
+.hero-title::before, .hero-title::after {
+  content: 'CSAW';
+  position: absolute; top: 0; left: 0;
+  font-family: var(--font-display);
+  font-size: inherit; line-height: inherit;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; -webkit-background-clip: text;
+}
+.hero-title::before {
+  background: linear-gradient(135deg,var(--red),var(--red));
+  clip-path: polygon(0 25%,100% 25%,100% 45%,0 45%);
+  animation: glitch1 5s infinite linear;
+}
+.hero-title::after {
+  background: linear-gradient(135deg,var(--cyan),var(--cyan));
+  clip-path: polygon(0 60%,100% 60%,100% 75%,0 75%);
+  animation: glitch2 5s infinite linear;
+}
+@keyframes glitch1 {
+  0%,88%,100% { opacity:0; transform:none; }
+  90%  { opacity:1; transform:translate(-3px,1px) skewX(-2deg); }
+  92%  { opacity:1; transform:translate(3px,-1px) skewX(2deg); }
+  94%  { opacity:0; }
+}
+@keyframes glitch2 {
+  0%,88%,100% { opacity:0; transform:none; }
+  91%  { opacity:1; transform:translate(3px,2px) skewX(1deg); }
+  93%  { opacity:1; transform:translate(-3px,-1px) skewX(-1deg); }
+  95%  { opacity:0; }
+}
+
+.hero-title .accent {
+  background: linear-gradient(135deg,var(--cyan) 0%,var(--green) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 30px rgba(0,212,255,0.4));
+}
+
+.hero-subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(20px,3vw,40px);
+  letter-spacing: 0.15em; color: var(--text-2);
+  margin-bottom: 32px; text-transform: uppercase;
+  animation: matrixReveal 1.2s 0.3s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+.hero-desc {
+  max-width: 560px; font-size: 16px; color: var(--text-2);
+  line-height: 1.7; margin-bottom: 48px;
+}
+
+.hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--cyan); color: var(--bg);
+  font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 14px 28px; border-radius: var(--radius);
+  text-decoration: none; border: none; cursor: pointer;
+  box-shadow: 0 0 30px rgba(0,212,255,0.4);
+  transition: var(--transition);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,212,255,0.6); }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent; color: var(--text);
+  font-family: var(--font-mono); font-size: 13px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 13px 28px; border-radius: var(--radius);
+  border: 1px solid var(--border-2);
+  text-decoration: none; cursor: pointer;
+  transition: var(--transition);
+}
+.btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.05); }
+
+.hero-stats {
+  display: flex; gap: 48px; margin-top: 80px;
+  padding-top: 48px; border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.stat { display: flex; flex-direction: column; gap: 4px; }
+.stat-number {
+  font-family: var(--font-display); font-size: 48px; line-height: 1;
+  background: linear-gradient(135deg,var(--cyan),var(--green));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.15em; }
+.stat-bar { height: 2px; background: var(--border); border-radius: 1px; margin-top: 8px; width: 60px; overflow: hidden; }
+.stat-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg,var(--cyan),var(--green)); border-radius: 1px; box-shadow: 0 0 6px var(--cyan); transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+
+/* floating terminal */
+.hero-terminal {
+  position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+  width: 420px;
+  background: rgba(8,13,18,0.95);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,212,255,0.05), inset 0 1px 0 rgba(255,255,255,0.04);
+  overflow: hidden;
+  animation: floatTerminal 6s ease-in-out infinite;
+  z-index: 3;
+}
+@keyframes floatTerminal {
+  0%,100% { transform: translateY(-50%) translateY(0px); }
+  50%     { transform: translateY(-50%) translateY(-12px); }
+}
+
+/* cyber corners */
+.cyber-corner { position: absolute; width: 20px; height: 20px; pointer-events: none; z-index: 10; }
+.cyber-corner::before, .cyber-corner::after { content: ''; position: absolute; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+.cyber-corner.tl { top: 0; left: 0; }
+.cyber-corner.tl::before { top:0; left:0; width:100%; height:1px; }
+.cyber-corner.tl::after  { top:0; left:0; width:1px; height:100%; }
+.cyber-corner.tr { top: 0; right: 0; }
+.cyber-corner.tr::before { top:0; right:0; width:100%; height:1px; }
+.cyber-corner.tr::after  { top:0; right:0; width:1px; height:100%; }
+.cyber-corner.bl { bottom: 0; left: 0; }
+.cyber-corner.bl::before { bottom:0; left:0; width:100%; height:1px; }
+.cyber-corner.bl::after  { bottom:0; left:0; width:1px; height:100%; }
+.cyber-corner.br { bottom: 0; right: 0; }
+.cyber-corner.br::before { bottom:0; right:0; width:100%; height:1px; }
+.cyber-corner.br::after  { bottom:0; right:0; width:1px; height:100%; }
+
+.terminal-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot.r { background: #ff5f57; }
+.t-dot.y { background: #febc2e; }
+.t-dot.g { background: #28c840; }
+.terminal-title { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); margin-left: 4px; }
+.terminal-body { padding: 20px; font-family: var(--font-mono); font-size: 12px; line-height: 1.8; }
+.t-line { display: flex; gap: 8px; margin-bottom: 2px; }
+.t-prompt { color: var(--green); }
+.t-cmd { color: var(--text); }
+.t-output { color: var(--cyan); padding-left: 4px; }
+.t-output.success { color: var(--green); }
+.t-output.warn { color: var(--amber); }
+.t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--cyan); animation: blink 1.2s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+/* ─── EVENT STRIP ──────────────────────────── */
+.event-strip {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 40px;
+  display: flex; align-items: center; justify-content: center; gap: 48px;
+  flex-wrap: wrap;
+  position: relative; z-index: 10;
+}
+.strip-item { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+.strip-item strong { color: var(--text); }
+
+/* ─── SECTIONS ─────────────────────────────── */
+section { padding: 120px 40px; position: relative; z-index: 10; }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+
+.section-label {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--cyan);
+  letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 20px;
+}
+.section-label::before { content: ''; width: 24px; height: 1px; background: var(--cyan); }
+.section-label .idx { color: var(--text-3); margin-left: 4px; }
+
+h2.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(40px,5vw,72px);
+  line-height: 1; letter-spacing: 0.03em;
+  margin-bottom: 16px; color: var(--text);
+}
+.section-desc { font-size: 17px; color: var(--text-2); max-width: 640px; line-height: 1.7; margin-bottom: 64px; }
+
+/* ─── ABOUT ────────────────────────────────── */
+.about { background: var(--bg-2); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.about-copy p { font-size: 16px; color: var(--text-2); line-height: 1.8; margin-bottom: 20px; }
+.about-copy p strong { color: var(--text); }
+.about-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.metric-cell { background: var(--surface); padding: 32px; transition: var(--transition); cursor: default; }
+.metric-cell:hover { background: var(--surface-2); }
+.metric-value { font-family: var(--font-display); font-size: 52px; line-height: 1; color: var(--cyan); margin-bottom: 8px; }
+.metric-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; }
+
+/* ─── COMPETITIONS ─────────────────────────── */
+.competitions { background: var(--bg); }
+.competitions-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; gap: 24px; flex-wrap: wrap; }
+.comp-filter { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-btn {
+  font-family: var(--font-mono); font-size: 11px; color: var(--text-2);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+  padding: 6px 16px; cursor: pointer; transition: var(--transition);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.filter-btn:hover, .filter-btn.active { color: var(--cyan); border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.08); }
+
+.comp-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+
+.comp-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px;
+  cursor: pointer; transition: var(--transition);
+  position: relative; overflow: hidden;
+  text-decoration: none; display: flex; flex-direction: column;
+}
+.comp-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg,transparent,var(--card-accent,var(--cyan)),transparent);
+  opacity: 0; transition: var(--transition);
+}
+.comp-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% -10%,var(--card-glow,rgba(0,212,255,0.06)) 0%,transparent 100%);
+  opacity: 0; transition: var(--transition); pointer-events: none;
+}
+.comp-card:hover { border-color: var(--card-accent,var(--cyan)); transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.comp-card:hover::before, .comp-card:hover::after { opacity: 1; }
+.comp-card.featured { grid-column: span 2; background: linear-gradient(135deg,var(--surface) 0%,var(--bg-3) 100%); }
+
+.comp-card[data-type="ctf"]    { --card-accent:#00d4ff; --card-glow:rgba(0,212,255,0.06); }
+.comp-card[data-type="hw"]     { --card-accent:#ff3366; --card-glow:rgba(255,51,102,0.06); }
+.comp-card[data-type="ai"]     { --card-accent:#b57aff; --card-glow:rgba(181,122,255,0.06); }
+.comp-card[data-type="bio"]    { --card-accent:#00ff87; --card-glow:rgba(0,255,135,0.06); }
+.comp-card[data-type="policy"] { --card-accent:#ffb830; --card-glow:rgba(255,184,48,0.06); }
+.comp-card[data-type="research"]{ --card-accent:#ff6b35; --card-glow:rgba(255,107,53,0.06); }
+
+.comp-tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; border: 1px solid; }
+.tag-ctf    { color:#00d4ff; border-color:rgba(0,212,255,0.3);   background:rgba(0,212,255,0.08); }
+.tag-hw     { color:#ff3366; border-color:rgba(255,51,102,0.3);  background:rgba(255,51,102,0.08); }
+.tag-ai     { color:#b57aff; border-color:rgba(181,122,255,0.3); background:rgba(181,122,255,0.08); }
+.tag-bio    { color:#00ff87; border-color:rgba(0,255,135,0.3);   background:rgba(0,255,135,0.08); }
+.tag-policy { color:#ffb830; border-color:rgba(255,184,48,0.3);  background:rgba(255,184,48,0.08); }
+.tag-research{color:#ff6b35; border-color:rgba(255,107,53,0.3);  background:rgba(255,107,53,0.08); }
+
+.comp-icon { width: 44px; height: 44px; border-radius: var(--radius); background: rgba(0,212,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; border: 1px solid rgba(0,212,255,0.2); }
+.comp-name { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.3; }
+.comp-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 20px; flex: 1; }
+.comp-meta { display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; border-top: 1px solid var(--border); padding-top: 16px; margin-top: auto; }
+.comp-arrow { width: 28px; height: 28px; border: 1px solid var(--border-2); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--text-3); transition: var(--transition); }
+.comp-card:hover .comp-arrow { border-color: var(--card-accent,var(--cyan)); color: var(--card-accent,var(--cyan)); background: rgba(0,212,255,0.1); }
+
+/* ─── REGIONS ──────────────────────────────── */
+.regions { background: var(--bg-2); }
+.regions-map { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
+.map-overlay { padding: 48px; display: grid; grid-template-columns: repeat(5,1fr); gap: 2px; }
+.region-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 20px; cursor: pointer; transition: var(--transition); text-decoration: none; display: block; text-align: center; }
+.region-card:hover { background: var(--surface-2); border-color: var(--cyan); transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 20px var(--cyan-glow); }
+.region-flag { font-size: 32px; margin-bottom: 12px; display: block; }
+.region-name { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.1em; color: var(--text); margin-bottom: 4px; }
+.region-host { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
+.region-badge { display: inline-flex; margin-top: 10px; font-family: var(--font-mono); font-size: 10px; color: var(--cyan); background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); padding: 3px 8px; border-radius: 20px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ─── AGENDA ───────────────────────────────── */
+.agenda { background: var(--bg-3); }
+.timeline { display: flex; flex-direction: column; position: relative; }
+.timeline::before { content: ''; position: absolute; left: 140px; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg,transparent 0%,var(--border-2) 10%,var(--border-2) 90%,transparent 100%); }
+.tl-item { display: flex; padding: 32px 0; border-bottom: 1px solid var(--border); }
+.tl-item:last-child { border-bottom: none; }
+.tl-date { width: 140px; flex-shrink: 0; padding-right: 32px; text-align: right; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 4px; }
+.tl-dot-wrap { width: 24px; flex-shrink: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 8px; position: relative; z-index: 1; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bg-3); border: 2px solid var(--cyan); box-shadow: 0 0 10px var(--cyan-glow-strong); }
+.tl-content { flex: 1; padding-left: 32px; }
+.tl-phase { font-family: var(--font-mono); font-size: 10px; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 6px; }
+.tl-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.tl-desc { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+
+/* ─── SPONSORS ─────────────────────────────── */
+.sponsors { background: var(--bg); }
+.sponsor-tiers { display: flex; flex-direction: column; gap: 48px; }
+.sponsor-tier-label { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.tier-name { font-family: var(--font-display); font-size: 24px; letter-spacing: 0.1em; color: var(--text); }
+.tier-badge { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; border: 1px solid; }
+.tier-diamond .tier-badge { color: #b9f2ff; border-color: rgba(185,242,255,0.4); background: rgba(185,242,255,0.05); }
+.tier-gold    .tier-badge { color: var(--amber); border-color: rgba(255,184,48,0.4); background: rgba(255,184,48,0.05); }
+.tier-silver  .tier-badge { color: #c0c0c0; border-color: rgba(192,192,192,0.4); background: rgba(192,192,192,0.05); }
+.sponsor-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.sponsor-logo { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; transition: var(--transition); cursor: pointer; text-decoration: none; }
+.sponsor-logo:hover { border-color: rgba(0,212,255,0.3); background: var(--surface-2); box-shadow: 0 0 20px rgba(0,212,255,0.1); }
+.tier-diamond .sponsor-logo { height: 80px; min-width: 200px; padding: 24px 32px; }
+.tier-gold    .sponsor-logo { height: 64px; min-width: 160px; padding: 16px 24px; }
+.tier-silver  .sponsor-logo { height: 52px; min-width: 120px; padding: 12px 20px; }
+.sponsor-name { font-family: var(--font-display); font-size: 18px; letter-spacing: 0.1em; color: var(--text-2); }
+.tier-diamond .sponsor-name { font-size: 22px; }
+.sponsor-cta { margin-top: 48px; background: linear-gradient(135deg,var(--surface) 0%,var(--bg-3) 100%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.sponsor-cta-text h3 { font-family: var(--font-display); font-size: 28px; letter-spacing: 0.05em; color: var(--text); margin-bottom: 8px; }
+.sponsor-cta-text p { font-size: 14px; color: var(--text-2); }
+
+/* ─── REGISTRATION ─────────────────────────── */
+.registration { background: var(--bg-2); }
+.registration::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle,rgba(0,212,255,0.05) 0%,transparent 70%); pointer-events: none; }
+.reg-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 48px; }
+.reg-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; position: relative; overflow: hidden; transition: var(--transition); }
+.reg-card.featured { border-color: rgba(0,212,255,0.4); background: linear-gradient(135deg,rgba(0,212,255,0.05) 0%,var(--surface) 60%); }
+.reg-card.featured::before { content: 'RECOMMENDED'; position: absolute; top: 16px; right: 16px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--cyan); background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); padding: 3px 8px; border-radius: 20px; }
+.reg-card:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(0,0,0,0.3); }
+.reg-card-type { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+.reg-card-title { font-family: var(--font-display); font-size: 28px; letter-spacing: 0.05em; color: var(--text); margin-bottom: 20px; }
+.reg-features { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px; }
+.reg-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-2); }
+.reg-features li::before { content: ''; flex-shrink: 0; width: 16px; height: 16px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%2300d4ff' d='M13.5 3.5L6 11 2.5 7.5l-1 1L6 13l8.5-8.5z'/%3E%3C/svg%3E") center/contain no-repeat; }
+
+/* ─── NEWS ─────────────────────────────────── */
+.news { background: var(--bg); }
+.news-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+.news-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: var(--transition); text-decoration: none; display: block; }
+.news-card:hover { border-color: var(--border-2); transform: translateY(-2px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.news-card-img { height: 200px; background: linear-gradient(135deg,var(--bg-3) 0%,var(--surface-2) 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; }
+.news-card-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom,transparent 60%,rgba(8,13,18,0.8) 100%); }
+.news-card-body { padding: 24px; }
+.news-date { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+.news-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+.news-excerpt { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+.news-sidebar { display: flex; flex-direction: column; gap: 16px; }
+.news-mini { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; cursor: pointer; transition: var(--transition); text-decoration: none; display: block; }
+.news-mini:hover { border-color: var(--border-2); background: var(--surface-2); }
+
+/* ─── CONTACT ──────────────────────────────── */
+.contact { background: var(--bg-3); border-top: 1px solid var(--border); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.contact-info h3 { font-family: var(--font-display); font-size: 36px; letter-spacing: 0.05em; color: var(--text); margin-bottom: 16px; }
+.contact-info p { font-size: 15px; color: var(--text-2); line-height: 1.7; margin-bottom: 32px; }
+.contact-links { display: flex; flex-direction: column; gap: 12px; }
+.contact-link { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 13px; color: var(--text-2); text-decoration: none; transition: var(--transition); }
+.contact-link:hover { color: var(--cyan); }
+.contact-link-icon { width: 36px; height: 36px; flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.contact-form { display: flex; flex-direction: column; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; }
+.form-input, .form-textarea { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; color: var(--text); font-family: var(--font-body); font-size: 14px; outline: none; transition: var(--transition); width: 100%; }
+.form-input:focus, .form-textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0,212,255,0.1); }
+.form-textarea { height: 120px; resize: vertical; }
+
+/* ─── GLOW DIVIDER ─────────────────────────── */
+.glow-divider {
+  height: 1px; position: relative; z-index: 10;
+  background: linear-gradient(90deg,transparent 0%,var(--cyan) 50%,transparent 100%);
+  opacity: 0.3; overflow: hidden;
+}
+.glow-divider::after {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 60px; height: 100%;
+  background: linear-gradient(90deg,transparent,rgba(0,212,255,0.8),transparent);
+  animation: streamFlow 4s ease-in-out infinite;
+}
+@keyframes streamFlow {
+  0%   { left: -10%; }
+  100% { left: 110%; }
+}
+
+/* ─── FOOTER ───────────────────────────────── */
+footer { background: var(--bg); border-top: 1px solid var(--border); padding: 48px 40px; position: relative; z-index: 10; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
+.footer-brand { display: flex; flex-direction: column; gap: 6px; }
+.footer-tagline { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.08em; }
+.footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+.footer-links a { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: var(--transition); }
+.footer-links a:hover { color: var(--cyan); }
+.footer-bottom { max-width: 1200px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-copy { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.05em; }
+
+/* ─── SCROLL REVEAL ────────────────────────── */
+/* Default: always visible. JS adds animation only if supported */
+.reveal { opacity: 1; transform: none; }
+.reveal.animate-ready { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.animate-ready.visible { opacity: 1; transform: none; }
+
+/* ─── RESPONSIVE ───────────────────────────── */
+@media (max-width: 1100px) {
+  .hero-terminal { display: none; }
+  .comp-grid { grid-template-columns: repeat(2,1fr); }
+  .comp-card.featured { grid-column: span 2; }
+}
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  section { padding: 80px 20px; }
+  .hero { padding: 100px 20px 60px; }
+  .hero-stats { gap: 24px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .comp-grid { grid-template-columns: 1fr; }
+  .comp-card.featured { grid-column: span 1; }
+  .map-overlay { grid-template-columns: repeat(3,1fr); padding: 24px; }
+  .reg-cards { grid-template-columns: 1fr; }
+  .news-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+  .event-strip { gap: 20px; padding: 16px 20px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .timeline::before { left: 80px; }
+  .tl-date { width: 80px; font-size: 10px; }
+}
 </style>
 </head>
 <body>
 
-<div class="noise"></div>
+<!-- Binary rain behind everything -->
 <canvas id="binary-canvas"></canvas>
+<div class="noise"></div>
 
-<!-- NAVIGATION -->
+<!-- ═══════════════════════════════════════════
+     NAV
+════════════════════════════════════════════ -->
 <nav id="nav">
   <a href="#" class="nav-logo">
-    <div class="logo-mark">⬡</div>
+    <div class="logo-mark" id="logo-mark">⬡</div>
     <span class="logo-text">CSAW</span>
     <span class="logo-year">'25</span>
   </a>
@@ -1360,38 +681,41 @@
   </ul>
 </nav>
 
-<!-- HERO -->
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="scanline-sweep"></div>
   <div class="particle-field" id="particle-field"></div>
 
-  <!-- Floating binary bits -->
+  <!-- Floating binary snippets -->
   <div class="binary-float" style="left:8%;bottom:20%;--dur:9s;--delay:0s;--op:0.5">01101001</div>
-  <div class="binary-float" style="left:15%;bottom:30%;--dur:11s;--delay:1.5s;--op:0.35">1010</div>
+  <div class="binary-float" style="left:15%;bottom:35%;--dur:11s;--delay:1.5s;--op:0.35">1010</div>
   <div class="binary-float" style="left:25%;bottom:15%;--dur:8s;--delay:3s;--op:0.4">0xFF</div>
   <div class="binary-float" style="left:72%;bottom:25%;--dur:13s;--delay:0.5s;--op:0.3">10110</div>
   <div class="binary-float" style="left:80%;bottom:40%;--dur:10s;--delay:2s;--op:0.45">01010101</div>
   <div class="binary-float" style="left:88%;bottom:18%;--dur:7s;--delay:4s;--op:0.35">1100</div>
   <div class="binary-float" style="left:5%;bottom:55%;--dur:12s;--delay:2.5s;--op:0.25">0x4E</div>
   <div class="binary-float" style="left:40%;bottom:10%;--dur:9s;--delay:1s;--op:0.3">11001010</div>
+  <div class="binary-float" style="left:55%;bottom:60%;--dur:14s;--delay:0.8s;--op:0.2">0b10101100</div>
+  <div class="binary-float" style="left:33%;bottom:45%;--dur:10s;--delay:3.5s;--op:0.25;color:var(--green)">0x1337</div>
 
-  <!-- Hex pulse decorations -->
-  <div class="hex-pulse" style="right:-60px;top:20%;opacity:0.2;animation-delay:0s"></div>
-  <div class="hex-pulse" style="right:80px;top:35%;width:120px;height:120px;animation-delay:2s;opacity:0.15"></div>
-  <div class="hex-pulse" style="left:-40px;bottom:20%;width:160px;height:160px;animation-delay:1s;opacity:0.1"></div>
+  <!-- Hex pulse rings -->
+  <div class="hex-pulse" style="right:-60px;top:20%;width:200px;height:200px;animation-delay:0s"></div>
+  <div class="hex-pulse" style="right:80px;top:35%;width:120px;height:120px;animation-delay:2s"></div>
+  <div class="hex-pulse" style="left:-40px;bottom:20%;width:160px;height:160px;animation-delay:1s"></div>
 
+  <!-- Hero content -->
   <div class="hero-content">
     <div class="hero-eyebrow">
-      <span>22nd Annual · Nov 5–7, 2025</span>
-      <span style="color: var(--text-3)">NYU Tandon School of Engineering</span>
+      <span id="eyebrow-1">22nd Annual · Nov 5–7, 2025</span>
+      <span style="color:var(--text-3)" id="eyebrow-2">NYU Tandon School of Engineering</span>
     </div>
 
-    <h1 class="hero-title glitch matrix-reveal" data-text="CSAW">
-      CS<span class="accent">AW</span>
-    </h1>
-    <div class="hero-subtitle matrix-reveal-sub">Cybersecurity Games & Conference</div>
+    <h1 class="hero-title">CS<span class="accent">AW</span></h1>
+    <div class="hero-subtitle">Cybersecurity Games &amp; Conference</div>
 
     <p class="hero-desc">
       The world's most comprehensive student-run cybersecurity event. 12 global challenges. 5 regions. 6,000+ participants from high school to doctoral level.
@@ -1410,80 +734,75 @@
 
     <div class="hero-stats">
       <div class="stat">
-        <span class="stat-number">22</span>
+        <span class="stat-number" data-target="22">22</span>
         <span class="stat-label">Years running</span>
         <div class="stat-bar"><div class="stat-bar-fill" data-pct="95"></div></div>
       </div>
       <div class="stat">
-        <span class="stat-number">5</span>
+        <span class="stat-number" data-target="5">5</span>
         <span class="stat-label">Global regions</span>
         <div class="stat-bar"><div class="stat-bar-fill" data-pct="80"></div></div>
       </div>
       <div class="stat">
-        <span class="stat-number">12</span>
+        <span class="stat-number" data-target="12">12</span>
         <span class="stat-label">Competitions</span>
         <div class="stat-bar"><div class="stat-bar-fill" data-pct="90"></div></div>
       </div>
       <div class="stat">
-        <span class="stat-number">6K+</span>
+        <span class="stat-number" data-target="6000" data-suffix="K+">6K+</span>
         <span class="stat-label">Participants</span>
         <div class="stat-bar"><div class="stat-bar-fill" data-pct="100"></div></div>
       </div>
     </div>
   </div>
 
-  <!-- Floating Terminal -->
-  <div class="hero-terminal" style="position:relative">
+  <!-- Floating terminal -->
+  <div class="hero-terminal">
     <div class="cyber-corner tl"></div>
     <div class="cyber-corner tr"></div>
     <div class="cyber-corner bl"></div>
     <div class="cyber-corner br"></div>
     <div class="terminal-bar">
-      <div class="t-dot r"></div>
-      <div class="t-dot y"></div>
-      <div class="t-dot g"></div>
+      <div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div>
       <span class="terminal-title">csaw-ctf — bash</span>
     </div>
-    <div class="terminal-body">
-      <div class="t-line"><span class="t-prompt">→</span><span class="t-cmd">csaw init challenge</span></div>
+    <div class="terminal-body" id="terminal-body">
+      <div class="t-line"><span class="t-prompt">→</span><span class="t-cmd"> csaw init challenge</span></div>
       <div class="t-line"><span class="t-output">✓ Environment initialized</span></div>
       <div class="t-line"><span class="t-output">✓ Connecting to 5 global nodes...</span></div>
-      <div class="t-line" style="margin-top:8px"><span class="t-prompt">→</span><span class="t-cmd">csaw status --all</span></div>
+      <div class="t-line" style="margin-top:8px"><span class="t-prompt">→</span><span class="t-cmd"> csaw status --all</span></div>
       <div class="t-line"><span class="t-output success">● CTF          [LIVE]  2,847 teams</span></div>
       <div class="t-line"><span class="t-output success">● AI-HW Attack [LIVE]  312 entries</span></div>
       <div class="t-line"><span class="t-output warn">● LLM CTF     [REG]   closing soon</span></div>
       <div class="t-line"><span class="t-output">● ESC          [REG]   open</span></div>
       <div class="t-line"><span class="t-output">● Hack3D       [REG]   open</span></div>
-      <div class="t-line" style="margin-top:8px"><span class="t-prompt">→</span><span class="t-cmd">csaw register --comp ctf</span></div>
-      <div class="t-line">
-        <span class="t-output success">✓ Registered. Welcome to CSAW'25 </span>
-        <span class="t-cursor"></span>
-      </div>
+      <div class="t-line" style="margin-top:8px"><span class="t-prompt">→</span><span class="t-cmd"> csaw register --comp ctf</span></div>
+      <div class="t-line"><span class="t-output success">✓ Registered. Welcome to CSAW'25 </span><span class="t-cursor"></span></div>
     </div>
   </div>
 </section>
 
-<!-- EVENT STRIP -->
-<div class="event-strip">
+<!-- ─── EVENT STRIP ─── -->
+<div class="event-strip" style="position:relative;z-index:10;">
   <div class="strip-item">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     <span><strong>November 5–7, 2025</strong></span>
   </div>
   <div class="strip-item">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
     <span><strong>Brooklyn, New York</strong> + 4 Global Regions</span>
   </div>
   <div class="strip-item">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
     <span><strong>500+</strong> Finalists</span>
   </div>
   <div class="strip-item">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
     <span><strong>Organized by NYU</strong> Center for Cybersecurity</span>
   </div>
 </div>
 
-<!-- ABOUT -->
+<!-- ═══════════════════════════════════════════ ABOUT -->
 <section class="about reveal" id="about">
   <div class="section-inner">
     <div class="about-grid">
@@ -1491,33 +810,20 @@
         <div class="section-label">About CSAW <span class="idx">/ 01</span></div>
         <h2 class="section-title">Two decades of cyber excellence</h2>
         <p>CSAW (see-SAW) was founded in 2003 by students of Professor <strong>Nasir Memon</strong>, co-founder of NYU Tandon's cybersecurity program. What began as a local competition has grown into the world's most comprehensive student-run cybersecurity event.</p>
-        <p>Directed by <strong>Ramesh Karri</strong>, CSAW continuously evolves to meet the changing threat landscape — from additive manufacturing to machine learning, cloud-based AI, and beyond. CSAW equips defenders with the skills they need when it matters most.</p>
+        <p>Directed by <strong>Ramesh Karri</strong>, CSAW continuously evolves to meet the changing threat landscape — from additive manufacturing to machine learning, cloud-based AI, and beyond.</p>
         <p>Participants range from <strong>high school students</strong> to <strong>doctoral candidates</strong>, united by a passion for cybersecurity and a desire to push boundaries.</p>
         <div style="margin-top:32px">
-          <a href="#" class="btn-secondary" style="display:inline-flex">
+          <a href="https://cyber.nyu.edu" class="btn-secondary" style="display:inline-flex" target="_blank">
             Learn More About CSAW
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>
       </div>
-
       <div class="about-metrics">
-        <div class="metric-cell">
-          <div class="metric-value">22</div>
-          <div class="metric-desc">Years of innovation</div>
-        </div>
-        <div class="metric-cell">
-          <div class="metric-value">5</div>
-          <div class="metric-desc">Global regions</div>
-        </div>
-        <div class="metric-cell">
-          <div class="metric-value">12</div>
-          <div class="metric-desc">Unique challenges</div>
-        </div>
-        <div class="metric-cell">
-          <div class="metric-value">6K+</div>
-          <div class="metric-desc">Total participants</div>
-        </div>
+        <div class="metric-cell"><div class="metric-value">22</div><div class="metric-desc">Years of innovation</div></div>
+        <div class="metric-cell"><div class="metric-value">5</div><div class="metric-desc">Global regions</div></div>
+        <div class="metric-cell"><div class="metric-value">12</div><div class="metric-desc">Unique challenges</div></div>
+        <div class="metric-cell"><div class="metric-value">6K+</div><div class="metric-desc">Total participants</div></div>
       </div>
     </div>
   </div>
@@ -1525,7 +831,7 @@
 
 <div class="glow-divider"></div>
 
-<!-- COMPETITIONS -->
+<!-- ═══════════════════════════════════════════ COMPETITIONS -->
 <section class="competitions reveal" id="competitions">
   <div class="section-inner">
     <div class="competitions-header">
@@ -1544,133 +850,68 @@
     </div>
 
     <div class="comp-grid">
-      <!-- Featured -->
-      <a href="https://www.csaw.io/ctf" class="comp-card featured" data-type="ctf">
-        <div class="comp-tag tag-ctf">
-          <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>
-          CTF · Flagship Event
-        </div>
+      <a href="https://www.csaw.io/ctf" class="comp-card featured" data-type="ctf" target="_blank">
+        <div class="comp-tag tag-ctf"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg> CTF · Flagship Event</div>
         <div class="comp-icon">🚩</div>
         <div class="comp-name">Capture the Flag</div>
         <div class="comp-desc">The flagship event. Attack and defend across web, binary exploitation, cryptography, reverse engineering, and forensics. Thousands of teams. 48-hour qualifier. Global finals.</div>
-        <div class="comp-meta">
-          <span>All Regions · Open to All</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>All Regions · Open to All</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
-
-      <!-- AI Hardware Attack -->
-      <a href="https://www.csaw.io/ai-hardware-attack-challenge" class="comp-card" data-type="hw">
+      <a href="https://www.csaw.io/ai-hardware-attack-challenge" class="comp-card" data-type="hw" target="_blank">
         <div class="comp-tag tag-hw">Hardware · New</div>
         <div class="comp-icon">🔬</div>
         <div class="comp-name">AI Hardware Attack Challenge</div>
         <div class="comp-desc">Attack AI accelerator hardware at the silicon level. Fault injection, side-channel, and adversarial physical attacks on ML systems.</div>
-        <div class="comp-meta">
-          <span>US-Canada · Undergrad+</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>US-Canada · Undergrad+</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
-
-      <!-- LLM CTF -->
-      <a href="https://www.csaw.io/llm-attack-challenge" class="comp-card" data-type="ai">
+      <a href="https://www.csaw.io/llm-attack-challenge" class="comp-card" data-type="ai" target="_blank">
         <div class="comp-tag tag-ai">AI/ML · Hot</div>
         <div class="comp-icon">🤖</div>
         <div class="comp-name">LLM CTF Attack Challenge</div>
         <div class="comp-desc">Jailbreak, prompt inject, and extract sensitive data from large language models. Test the boundaries of AI safety.</div>
-        <div class="comp-meta">
-          <span>All Levels</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>All Levels</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
-
-      <!-- Agentic CTF -->
-      <a href="https://www.csaw.io/agentic-automated-ctf" class="comp-card" data-type="ai">
+      <a href="https://www.csaw.io/agentic-automated-ctf" class="comp-card" data-type="ai" target="_blank">
         <div class="comp-tag tag-ai">AI/ML · Novel</div>
         <div class="comp-icon">⚡</div>
         <div class="comp-name">Agentic Automated CTF</div>
         <div class="comp-desc">Deploy AI agents to autonomously solve CTF challenges. The intersection of automation, offensive security, and machine learning.</div>
-        <div class="comp-meta">
-          <span>Advanced · Teams</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>Advanced · Teams</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
-
-      <!-- Embedded Security -->
-      <a href="https://www.csaw.io/esc" class="comp-card" data-type="hw">
+      <a href="https://www.csaw.io/esc" class="comp-card" data-type="hw" target="_blank">
         <div class="comp-tag tag-hw">Hardware</div>
         <div class="comp-icon">🔧</div>
         <div class="comp-name">Embedded Security Challenge</div>
         <div class="comp-desc">Find and exploit vulnerabilities in embedded systems. Custom hardware, firmware reversing, and physical attacks on IoT devices.</div>
-        <div class="comp-meta">
-          <span>All Regions</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>All Regions</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
-
-      <!-- Applied Research -->
-      <a href="https://www.csaw.io/research" class="comp-card" data-type="research">
+      <a href="https://www.csaw.io/research" class="comp-card" data-type="research" target="_blank">
         <div class="comp-tag tag-research">Research</div>
         <div class="comp-icon">📄</div>
         <div class="comp-name">Applied Research Competition</div>
         <div class="comp-desc">Present original cybersecurity research to panels of industry and academic experts. Publication opportunities available.</div>
-        <div class="comp-meta">
-          <span>Graduate · PhD</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>Graduate · PhD</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
-
-      <!-- Cyber Policy -->
-      <a href="https://www.csaw.io/cyber-policy-competition" class="comp-card" data-type="policy">
+      <a href="https://www.csaw.io/cyber-policy-competition" class="comp-card" data-type="policy" target="_blank">
         <div class="comp-tag tag-policy">Policy</div>
         <div class="comp-icon">🏛️</div>
         <div class="comp-name">Cyber Policy Competition</div>
         <div class="comp-desc">Craft real-world cybersecurity policy briefs and present to government and industry stakeholders. Where law meets security.</div>
-        <div class="comp-meta">
-          <span>All Regions</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>All Regions</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
-
-      <!-- BioHack3D -->
-      <a href="https://www.csaw.io/biohack3d-us-canada" class="comp-card" data-type="hw">
+      <a href="https://www.csaw.io/biohack3d-us-canada" class="comp-card" data-type="bio" target="_blank">
         <div class="comp-tag tag-bio">Bio · 3D</div>
         <div class="comp-icon">🧬</div>
         <div class="comp-name">BioHack3D</div>
         <div class="comp-desc">Security vulnerabilities in 3D bioprinting and medical device manufacturing. An emerging frontier in hardware security research.</div>
-        <div class="comp-meta">
-          <span>US-Canada · MENA</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>US-Canada · MENA</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
-
-      <!-- OT Security -->
-      <a href="https://www.csaw.io/ot-security-competition" class="comp-card" data-type="hw">
+      <a href="https://www.csaw.io/ot-security-competition" class="comp-card" data-type="hw" target="_blank">
         <div class="comp-tag tag-hw">OT/ICS</div>
         <div class="comp-icon">🏭</div>
         <div class="comp-name">OT Security Competition</div>
         <div class="comp-desc">Attack and defend Operational Technology and Industrial Control Systems. Critical infrastructure security in a live environment.</div>
-        <div class="comp-meta">
-          <span>All Levels</span>
-          <div class="comp-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        <div class="comp-meta"><span>All Levels</span><div class="comp-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
       </a>
     </div>
   </div>
@@ -1678,100 +919,56 @@
 
 <div class="glow-divider"></div>
 
-<!-- REGIONS -->
+<!-- ═══════════════════════════════════════════ REGIONS -->
 <section class="regions reveal" id="regions">
   <div class="section-inner">
     <div class="section-label">Global Regions <span class="idx">/ 03</span></div>
     <h2 class="section-title">Worldwide Reach</h2>
-    <p class="section-desc">CSAW operates across five continents. Select your region to view local competitions, logistics, and registration details.</p>
-
+    <p class="section-desc">CSAW operates across five continents. Select your region to view local competitions and registration details.</p>
     <div class="regions-map">
       <div class="map-overlay">
-        <a href="https://www.csaw.io/us-canada" class="region-card">
-          <span class="region-flag">🇺🇸</span>
-          <div class="region-name">US-Canada</div>
-          <div class="region-host">NYU Tandon · Brooklyn</div>
-          <div class="region-badge">Main Finals</div>
-        </a>
-        <a href="https://www.csaw.io/europe" class="region-card">
-          <span class="region-flag">🇪🇺</span>
-          <div class="region-name">Europe</div>
-          <div class="region-host">EPFL · Switzerland</div>
-          <div class="region-badge">Finals Hub</div>
-        </a>
-        <a href="https://www.csaw.io/india" class="region-card">
-          <span class="region-flag">🇮🇳</span>
-          <div class="region-name">India</div>
-          <div class="region-host">IIT Kanpur</div>
-          <div class="region-badge">Regional Finals</div>
-        </a>
-        <a href="https://www.csaw.io/mena" class="region-card">
-          <span class="region-flag">🌍</span>
-          <div class="region-name">MENA</div>
-          <div class="region-host">NYU Abu Dhabi</div>
-          <div class="region-badge">Regional Finals</div>
-        </a>
-        <a href="https://www.csaw.io/mexico" class="region-card">
-          <span class="region-flag">🇲🇽</span>
-          <div class="region-name">Mexico</div>
-          <div class="region-host">Iberoamericana</div>
-          <div class="region-badge">Regional Finals</div>
-        </a>
+        <a href="https://www.csaw.io/us-canada" class="region-card" target="_blank"><span class="region-flag">🇺🇸</span><div class="region-name">US-Canada</div><div class="region-host">NYU Tandon · Brooklyn</div><div class="region-badge">Main Finals</div></a>
+        <a href="https://www.csaw.io/europe" class="region-card" target="_blank"><span class="region-flag">🇪🇺</span><div class="region-name">Europe</div><div class="region-host">EPFL · Switzerland</div><div class="region-badge">Finals Hub</div></a>
+        <a href="https://www.csaw.io/india" class="region-card" target="_blank"><span class="region-flag">🇮🇳</span><div class="region-name">India</div><div class="region-host">IIT Kanpur</div><div class="region-badge">Regional Finals</div></a>
+        <a href="https://www.csaw.io/mena" class="region-card" target="_blank"><span class="region-flag">🌍</span><div class="region-name">MENA</div><div class="region-host">NYU Abu Dhabi</div><div class="region-badge">Regional Finals</div></a>
+        <a href="https://www.csaw.io/mexico" class="region-card" target="_blank"><span class="region-flag">🇲🇽</span><div class="region-name">Mexico</div><div class="region-host">Iberoamericana</div><div class="region-badge">Regional Finals</div></a>
       </div>
     </div>
-
-    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; display: flex; align-items: center; gap: 16px;">
-      <div style="font-family: var(--font-mono); font-size: 12px; color: var(--cyan);">ℹ</div>
-      <div style="font-family: var(--font-mono); font-size: 12px; color: var(--text-2);">Qualifiers are conducted online globally. Regional finals determine who advances to global championships in Brooklyn, NY.</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;display:flex;align-items:center;gap:16px">
+      <div style="font-family:var(--font-mono);font-size:14px;color:var(--cyan)">ℹ</div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-2)">Qualifiers are conducted online globally. Regional finals determine who advances to global championships in Brooklyn, NY.</div>
     </div>
   </div>
 </section>
 
 <div class="glow-divider"></div>
 
-<!-- AGENDA / TIMELINE -->
+<!-- ═══════════════════════════════════════════ AGENDA -->
 <section class="agenda reveal" id="agenda">
   <div class="section-inner">
     <div class="section-label">Key Dates <span class="idx">/ 04</span></div>
     <h2 class="section-title">CSAW'25 Timeline</h2>
-    <p class="section-desc">Mark your calendar. Every competition follows a qualifier → finals pipeline with strict deadlines.</p>
-
+    <p class="section-desc">Mark your calendar. Every competition follows a qualifier → finals pipeline.</p>
     <div class="timeline">
       <div class="tl-item">
         <div class="tl-date">Jul 2025</div>
-        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color: var(--green)"></div></div>
-        <div class="tl-content">
-          <div class="tl-phase" style="color: var(--green)">Phase 1 · Open</div>
-          <div class="tl-title">Registration Opens</div>
-          <div class="tl-desc">All competition registrations open. Teams form, advisors register, and regional qualifiers begin accepting entries. Early registration recommended.</div>
-        </div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--green);box-shadow:0 0 10px rgba(0,255,135,0.5)"></div></div>
+        <div class="tl-content"><div class="tl-phase" style="color:var(--green)">Phase 1 · Open</div><div class="tl-title">Registration Opens</div><div class="tl-desc">All competition registrations open. Teams form, advisors register, and regional qualifiers begin accepting entries.</div></div>
       </div>
       <div class="tl-item">
         <div class="tl-date">Sep 2025</div>
         <div class="tl-dot-wrap"><div class="tl-dot"></div></div>
-        <div class="tl-content">
-          <div class="tl-phase">Phase 2 · Qualifying</div>
-          <div class="tl-title">Global Online Qualifiers</div>
-          <div class="tl-desc">48-hour CTF qualifier runs online. All other competitions launch their online qualification rounds. Problems released simultaneously across all regions.</div>
-        </div>
+        <div class="tl-content"><div class="tl-phase">Phase 2 · Qualifying</div><div class="tl-title">Global Online Qualifiers</div><div class="tl-desc">48-hour CTF qualifier runs online. All other competitions launch their online qualification rounds simultaneously across all regions.</div></div>
       </div>
       <div class="tl-item">
         <div class="tl-date">Oct 2025</div>
-        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color: var(--amber)"></div></div>
-        <div class="tl-content">
-          <div class="tl-phase" style="color: var(--amber)">Phase 3 · Selection</div>
-          <div class="tl-title">Finalist Announcements</div>
-          <div class="tl-desc">Top 10 teams per region per competition invited to regional finals. Travel grants available for qualifying student teams.</div>
-        </div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--amber);box-shadow:0 0 10px rgba(255,184,48,0.5)"></div></div>
+        <div class="tl-content"><div class="tl-phase" style="color:var(--amber)">Phase 3 · Selection</div><div class="tl-title">Finalist Announcements</div><div class="tl-desc">Top teams per region invited to regional finals. Travel grants available for qualifying student teams.</div></div>
       </div>
       <div class="tl-item">
         <div class="tl-date">Nov 5–7</div>
-        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,212,255,0.6)"></div></div>
-        <div class="tl-content">
-          <div class="tl-phase">Phase 4 · Finals</div>
-          <div class="tl-title">CSAW'25 Finals & Conference</div>
-          <div class="tl-desc">Three days of in-person competitions, keynotes from top security researchers, career fair, workshops, and awards ceremony in Brooklyn, New York.</div>
-        </div>
+        <div class="tl-dot-wrap"><div class="tl-dot" style="border-color:var(--cyan);box-shadow:0 0 16px rgba(0,212,255,0.7)"></div></div>
+        <div class="tl-content"><div class="tl-phase">Phase 4 · Finals</div><div class="tl-title">CSAW'25 Finals &amp; Conference</div><div class="tl-desc">Three days of in-person competitions, keynotes, career fair, workshops, and awards ceremony in Brooklyn, New York.</div></div>
       </div>
     </div>
   </div>
@@ -1779,39 +976,23 @@
 
 <div class="glow-divider"></div>
 
-<!-- SPONSORS -->
+<!-- ═══════════════════════════════════════════ SPONSORS -->
 <section class="sponsors reveal" id="sponsors">
   <div class="section-inner">
     <div class="section-label">Sponsors <span class="idx">/ 05</span></div>
     <h2 class="section-title">Supported By Industry Leaders</h2>
     <p class="section-desc">CSAW partners with organizations that believe in developing the next generation of cybersecurity professionals.</p>
-
     <div class="sponsor-tiers">
-      <!-- Diamond -->
       <div class="sponsor-tier tier-diamond">
-        <div class="sponsor-tier-label">
-          <span class="tier-name">Diamond</span>
-          <span class="tier-badge">Founding Partner</span>
-        </div>
+        <div class="sponsor-tier-label"><span class="tier-name">Diamond</span><span class="tier-badge">Founding Partner</span></div>
         <div class="sponsor-row">
-          <a href="#" class="sponsor-logo">
-            <span class="sponsor-name">DARPA</span>
-          </a>
-          <a href="#" class="sponsor-logo">
-            <span class="sponsor-name">NSF</span>
-          </a>
-          <a href="#" class="sponsor-logo">
-            <span class="sponsor-name">Google</span>
-          </a>
+          <a href="#" class="sponsor-logo"><span class="sponsor-name">DARPA</span></a>
+          <a href="#" class="sponsor-logo"><span class="sponsor-name">NSF</span></a>
+          <a href="#" class="sponsor-logo"><span class="sponsor-name">Google</span></a>
         </div>
       </div>
-
-      <!-- Gold -->
       <div class="sponsor-tier tier-gold">
-        <div class="sponsor-tier-label">
-          <span class="tier-name">Gold</span>
-          <span class="tier-badge">Premier Sponsor</span>
-        </div>
+        <div class="sponsor-tier-label"><span class="tier-name">Gold</span><span class="tier-badge">Premier Sponsor</span></div>
         <div class="sponsor-row">
           <a href="#" class="sponsor-logo"><span class="sponsor-name">Raytheon</span></a>
           <a href="#" class="sponsor-logo"><span class="sponsor-name">Palo Alto Networks</span></a>
@@ -1819,30 +1000,22 @@
           <a href="#" class="sponsor-logo"><span class="sponsor-name">IBM</span></a>
         </div>
       </div>
-
-      <!-- Silver -->
       <div class="sponsor-tier tier-silver">
-        <div class="sponsor-tier-label">
-          <span class="tier-name">Silver</span>
-          <span class="tier-badge">Supporting Sponsor</span>
-        </div>
+        <div class="sponsor-tier-label"><span class="tier-name">Silver</span><span class="tier-badge">Supporting Sponsor</span></div>
         <div class="sponsor-row">
           <a href="#" class="sponsor-logo"><span class="sponsor-name">CrowdStrike</span></a>
           <a href="#" class="sponsor-logo"><span class="sponsor-name">Cisco</span></a>
           <a href="#" class="sponsor-logo"><span class="sponsor-name">Mandiant</span></a>
           <a href="#" class="sponsor-logo"><span class="sponsor-name">Qualcomm</span></a>
-          <a href="#" class="sponsor-logo"><span class="sponsor-name">Armis</span></a>
         </div>
       </div>
     </div>
-
-    <!-- Sponsor CTA -->
     <div class="sponsor-cta">
       <div class="sponsor-cta-text">
         <h3>Become a CSAW Sponsor</h3>
-        <p>Connect with 6,000+ emerging cybersecurity professionals. Recruit top talent, sponsor prizes, and shape the future of the field.</p>
+        <p>Connect with 6,000+ emerging cybersecurity professionals. Recruit top talent and shape the future of the field.</p>
       </div>
-      <div style="display:flex; gap:12px; flex-shrink:0; flex-wrap:wrap">
+      <div style="display:flex;gap:12px;flex-shrink:0;flex-wrap:wrap">
         <a href="#" class="btn-primary" style="white-space:nowrap">Download Prospectus</a>
         <a href="#contact" class="btn-secondary" style="white-space:nowrap">Contact Us</a>
       </div>
@@ -1852,13 +1025,12 @@
 
 <div class="glow-divider"></div>
 
-<!-- REGISTRATION -->
+<!-- ═══════════════════════════════════════════ REGISTRATION -->
 <section class="registration reveal" id="registration">
   <div class="section-inner">
     <div class="section-label">Registration <span class="idx">/ 06</span></div>
     <h2 class="section-title">Join CSAW'25</h2>
     <p class="section-desc">Registration is free for all student participants. Choose your path below.</p>
-
     <div class="reg-cards">
       <div class="reg-card">
         <div class="reg-card-type">Individual</div>
@@ -1869,11 +1041,8 @@
           <li>Community Discord</li>
           <li>Digital certificate</li>
         </ul>
-        <a href="https://forms.gle/bFREcyFyrDdEaaEt5" class="btn-secondary" style="width:100%; justify-content:center" target="_blank">
-          Register Solo
-        </a>
+        <a href="https://forms.gle/bFREcyFyrDdEaaEt5" class="btn-secondary" style="width:100%;justify-content:center" target="_blank">Register Solo</a>
       </div>
-
       <div class="reg-card featured">
         <div class="reg-card-type">Team</div>
         <div class="reg-card-title">Team Entry</div>
@@ -1884,11 +1053,8 @@
           <li>Travel grant eligibility</li>
           <li>Industry networking access</li>
         </ul>
-        <a href="https://forms.gle/bFREcyFyrDdEaaEt5" class="btn-primary" style="width:100%; justify-content:center" target="_blank">
-          Register Team →
-        </a>
+        <a href="https://forms.gle/bFREcyFyrDdEaaEt5" class="btn-primary" style="width:100%;justify-content:center" target="_blank">Register Team →</a>
       </div>
-
       <div class="reg-card">
         <div class="reg-card-type">Academic</div>
         <div class="reg-card-title">Faculty Advisor</div>
@@ -1898,26 +1064,22 @@
           <li>Research paper submission</li>
           <li>Workshop facilitation</li>
         </ul>
-        <a href="https://forms.gle/bFREcyFyrDdEaaEt5" class="btn-secondary" style="width:100%; justify-content:center" target="_blank">
-          Advisor Portal
-        </a>
+        <a href="https://forms.gle/bFREcyFyrDdEaaEt5" class="btn-secondary" style="width:100%;justify-content:center" target="_blank">Advisor Portal</a>
       </div>
     </div>
-
-    <div style="text-align:center; font-family: var(--font-mono); font-size: 12px; color: var(--text-3);">
-      Questions? Contact <span style="color: var(--cyan)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8be8f8eafccbe5f2fea5eeeffe">[email&#160;protected]</a></span> · Registration closes October 1, 2025
+    <div style="text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--text-3)">
+      Questions? Contact <span style="color:var(--cyan)">csaw@nyu.edu</span> · Registration closes October 1, 2025
     </div>
   </div>
 </section>
 
 <div class="glow-divider"></div>
 
-<!-- NEWS -->
+<!-- ═══════════════════════════════════════════ NEWS -->
 <section class="news reveal" id="news">
   <div class="section-inner">
-    <div class="section-label">News & Press <span class="idx">/ 07</span></div>
+    <div class="section-label">News &amp; Press <span class="idx">/ 07</span></div>
     <h2 class="section-title">Latest from CSAW</h2>
-
     <div class="news-grid">
       <a href="#" class="news-card">
         <div class="news-card-img">🔐</div>
@@ -1927,24 +1089,11 @@
           <div class="news-excerpt">The 22nd annual CSAW event has officially opened registration for all competitions. This year introduces two new AI-focused challenges: the Agentic Automated CTF and an expanded LLM Attack Challenge.</div>
         </div>
       </a>
-
       <div class="news-sidebar">
-        <a href="#" class="news-mini">
-          <div class="news-date">June 2025</div>
-          <div class="news-title" style="font-size:14px">CSAW Partners with DARPA for AI Hardware Challenge Prize Pool</div>
-        </a>
-        <a href="#" class="news-mini">
-          <div class="news-date">May 2025</div>
-          <div class="news-title" style="font-size:14px">2024 Winners: NYU Team Takes CTF Gold for Third Consecutive Year</div>
-        </a>
-        <a href="#" class="news-mini">
-          <div class="news-date">April 2025</div>
-          <div class="news-title" style="font-size:14px">CSAW Expands BioHack3D to MENA Region in 2025</div>
-        </a>
-        <a href="#" class="news-mini">
-          <div class="news-date">March 2025</div>
-          <div class="news-title" style="font-size:14px">NYU Center for Cybersecurity Announces $2M Scholarship Fund</div>
-        </a>
+        <a href="#" class="news-mini"><div class="news-date">June 2025</div><div class="news-title" style="font-size:14px;color:var(--text);font-weight:600;margin-top:6px">CSAW Partners with DARPA for AI Hardware Challenge Prize Pool</div></a>
+        <a href="#" class="news-mini"><div class="news-date">May 2025</div><div class="news-title" style="font-size:14px;color:var(--text);font-weight:600;margin-top:6px">2024 Winners: NYU Team Takes CTF Gold for Third Consecutive Year</div></a>
+        <a href="#" class="news-mini"><div class="news-date">April 2025</div><div class="news-title" style="font-size:14px;color:var(--text);font-weight:600;margin-top:6px">CSAW Expands BioHack3D to MENA Region in 2025</div></a>
+        <a href="#" class="news-mini"><div class="news-date">March 2025</div><div class="news-title" style="font-size:14px;color:var(--text);font-weight:600;margin-top:6px">NYU Center for Cybersecurity Announces $2M Scholarship Fund</div></a>
       </div>
     </div>
   </div>
@@ -1952,7 +1101,7 @@
 
 <div class="glow-divider"></div>
 
-<!-- CONTACT -->
+<!-- ═══════════════════════════════════════════ CONTACT -->
 <section class="contact reveal" id="contact">
   <div class="section-inner">
     <div class="section-label">Contact <span class="idx">/ 08</span></div>
@@ -1960,50 +1109,21 @@
       <div class="contact-info">
         <h3>Get in Touch</h3>
         <p>Questions about competitions, sponsorships, media inquiries, or general CSAW information? Our team is here to help.</p>
-
         <div class="contact-links">
-          <a href="/cdn-cgi/l/email-protection#8fecfceef8cfe1f6faa1eaebfa" class="contact-link">
-            <div class="contact-link-icon">✉</div>
-            <span class="__cf_email__" data-cfemail="e586968492a58b9c90cb808190">[email&#160;protected]</span>
-          </a>
-          <a href="https://www.nyu.edu" class="contact-link">
-            <div class="contact-link-icon">🏛</div>
-            NYU Tandon School of Engineering, Brooklyn NY
-          </a>
-          <a href="https://cyber.nyu.edu" class="contact-link">
-            <div class="contact-link-icon">🔗</div>
-            NYU Center for Cybersecurity
-          </a>
-          <a href="https://twitter.com/csaw_hack" class="contact-link">
-            <div class="contact-link-icon">𝕏</div>
-            @csaw_hack
-          </a>
+          <a href="mailto:csaw@nyu.edu" class="contact-link"><div class="contact-link-icon">✉</div>csaw@nyu.edu</a>
+          <a href="#" class="contact-link"><div class="contact-link-icon">🏛</div>NYU Tandon School of Engineering, Brooklyn NY</a>
+          <a href="https://cyber.nyu.edu" class="contact-link" target="_blank"><div class="contact-link-icon">🔗</div>NYU Center for Cybersecurity</a>
+          <a href="https://twitter.com/csaw_hack" class="contact-link" target="_blank"><div class="contact-link-icon">𝕏</div>@csaw_hack</a>
         </div>
       </div>
-
       <form class="contact-form" onsubmit="return false">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
-          <div class="form-group">
-            <label class="form-label">Name</label>
-            <input class="form-input" type="text" placeholder="Jane Smith">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Institution</label>
-            <input class="form-input" type="text" placeholder="NYU, MIT...">
-          </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" placeholder="Jane Smith"></div>
+          <div class="form-group"><label class="form-label">Institution</label><input class="form-input" type="text" placeholder="NYU, MIT..."></div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input class="form-input" type="email" placeholder="you@university.edu">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Subject</label>
-          <input class="form-input" type="text" placeholder="Competition inquiry, sponsorship...">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Message</label>
-          <textarea class="form-textarea" placeholder="Tell us more..."></textarea>
-        </div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@university.edu"></div>
+        <div class="form-group"><label class="form-label">Subject</label><input class="form-input" type="text" placeholder="Competition inquiry, sponsorship..."></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Tell us more..."></textarea></div>
         <button type="submit" class="btn-primary" style="align-self:flex-start">
           Send Message
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -2013,7 +1133,7 @@
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════ FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
@@ -2022,341 +1142,284 @@
         <span class="logo-text">CSAW</span>
         <span class="logo-year">'25</span>
       </div>
-      <div class="footer-tagline">Cybersecurity Games & Conference · Since 2003</div>
+      <div class="footer-tagline">Cybersecurity Games &amp; Conference · Since 2003</div>
     </div>
-
     <ul class="footer-links">
       <li><a href="#competitions">Competitions</a></li>
       <li><a href="#regions">Regions</a></li>
       <li><a href="#agenda">Agenda</a></li>
       <li><a href="#sponsors">Sponsors</a></li>
-      <li><a href="https://www.csaw.io/codeofconduct">Code of Conduct</a></li>
-      <li><a href="https://cyber.nyu.edu/student-scholarships/">Scholarship</a></li>
+      <li><a href="https://www.csaw.io/codeofconduct" target="_blank">Code of Conduct</a></li>
+      <li><a href="https://cyber.nyu.edu/student-scholarships/" target="_blank">Scholarship</a></li>
     </ul>
   </div>
-
   <div class="footer-bottom">
-    <div class="footer-copy">
-      © 2025 NYU Center for Cybersecurity · Organized by NYU Tandon School of Engineering
-    </div>
-    <div class="footer-copy" style="display:flex; gap:24px">
-      <a href="#" style="color:var(--text-3); text-decoration:none; font-family:var(--font-mono); font-size:11px; letter-spacing:0.05em; transition:var(--transition)" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--text-3)'">Privacy</a>
-      <a href="#" style="color:var(--text-3); text-decoration:none; font-family:var(--font-mono); font-size:11px; letter-spacing:0.05em; transition:var(--transition)" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--text-3)'">Press Kit</a>
-      <a href="https://www.csaw.io/press-media" style="color:var(--text-3); text-decoration:none; font-family:var(--font-mono); font-size:11px; letter-spacing:0.05em; transition:var(--transition)" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--text-3)'">Media</a>
+    <div class="footer-copy">© 2025 NYU Center for Cybersecurity · Organized by NYU Tandon School of Engineering</div>
+    <div style="display:flex;gap:24px">
+      <a href="#" class="footer-copy" style="text-decoration:none;transition:var(--transition)" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color=''">Privacy</a>
+      <a href="#" class="footer-copy" style="text-decoration:none;transition:var(--transition)" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color=''">Press Kit</a>
+      <a href="https://www.csaw.io/press-media" class="footer-copy" style="text-decoration:none;transition:var(--transition)" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color=''" target="_blank">Media</a>
     </div>
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
+<!-- cursor trail bits -->
+<div id="cursor-bits"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// BINARY RAIN CANVAS
+// ═══════════════════════════════════════════════════════════
+const canvas = document.getElementById('binary-canvas');
+const ctx = canvas.getContext('2d');
+const FS = 13;
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); initDrops(); });
+
+let drops, speeds, opacities, greens;
+function initDrops() {
+  const cols = Math.floor(canvas.width / FS);
+  drops    = Array.from({length: cols}, () => Math.random() * -(canvas.height / FS));
+  speeds   = Array.from({length: cols}, () => 0.15 + Math.random() * 0.4);
+  opacities= Array.from({length: cols}, () => 0.05 + Math.random() * 0.5);
+  greens   = Array.from({length: cols}, () => Math.random() > 0.85);
+}
+initDrops();
+
+function drawRain() {
+  ctx.fillStyle = 'rgba(3,6,9,0.06)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = FS + 'px "IBM Plex Mono",monospace';
+
+  for (let i = 0; i < drops.length; i++) {
+    const x = i * FS;
+    const y = drops[i] * FS;
+    const isGreen = greens[i];
+    const baseAlpha = opacities[i];
+
+    // head character — brightest
+    ctx.fillStyle = isGreen
+      ? `rgba(0,255,135,${Math.min(baseAlpha * 2.5, 1)})`
+      : `rgba(0,212,255,${Math.min(baseAlpha * 2.5, 1)})`;
+    ctx.fillText(Math.random() > 0.5 ? '1' : '0', x, y);
+
+    // trail — 8 chars fading out
+    for (let t = 1; t <= 8; t++) {
+      const a = baseAlpha * (1 - t / 9);
+      if (a < 0.01) break;
+      ctx.fillStyle = isGreen
+        ? `rgba(0,255,135,${a})`
+        : `rgba(0,212,255,${a})`;
+      ctx.fillText(Math.random() > 0.5 ? '1' : '0', x, y - t * FS);
+    }
+
+    drops[i] += speeds[i];
+    if (drops[i] * FS > canvas.height && Math.random() > 0.975) {
+      drops[i]    = -Math.random() * 10;
+      opacities[i]= 0.05 + Math.random() * 0.5;
+      speeds[i]   = 0.15 + Math.random() * 0.4;
+      greens[i]   = Math.random() > 0.85;
+    }
+  }
+}
+setInterval(drawRain, 50);
+
+// ═══════════════════════════════════════════════════════════
+// SCROLL REVEAL — safe: always visible, animate only if IO
+// ═══════════════════════════════════════════════════════════
+const reveals = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  reveals.forEach(el => el.classList.add('animate-ready'));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.transitionDelay = '0s';
         entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
+        io.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-  reveals.forEach(el => observer.observe(el));
+  }, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' });
+  reveals.forEach(el => io.observe(el));
+}
 
-  // Nav scroll effect
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 40) {
-      nav.style.borderBottomColor = 'var(--border-2)';
-    } else {
-      nav.style.borderBottomColor = 'var(--border)';
-    }
+// ═══════════════════════════════════════════════════════════
+// NAV SCROLL
+// ═══════════════════════════════════════════════════════════
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.style.borderBottomColor = window.scrollY > 40 ? 'var(--border-2)' : 'var(--border)';
+}, {passive: true});
+
+// ═══════════════════════════════════════════════════════════
+// SMOOTH ANCHOR SCROLL
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
   });
+});
 
-  // Competition filter (visual only)
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
+// ═══════════════════════════════════════════════════════════
+// FILTER BUTTONS
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
   });
+});
 
-  // Subtle parallax on hero background
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    const heroBg = document.querySelector('.hero-bg');
-    if (heroBg) heroBg.style.transform = `translateY(${y * 0.2}px)`;
-    const heroGrid = document.querySelector('.hero-grid');
-    if (heroGrid) heroGrid.style.transform = `translateY(${y * 0.1}px)`;
-  });
+// ═══════════════════════════════════════════════════════════
+// PARALLAX on hero bg
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  const heroBg = document.querySelector('.hero-bg');
+  const heroGrid = document.querySelector('.hero-grid');
+  if (heroBg)   heroBg.style.transform   = `translateY(${y * 0.15}px)`;
+  if (heroGrid) heroGrid.style.transform = `translateY(${y * 0.08}px)`;
+}, {passive: true});
 
-  // Smooth anchor scrolling
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-
-  // Count-up animation for stats
-  function animateCount(el, target, suffix = '') {
-    let start = 0;
-    const duration = 1500;
-    const startTime = performance.now();
-    function update(now) {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const value = Math.floor(ease * target);
-      el.textContent = value + (progress === 1 ? suffix : '');
-      if (progress < 1) requestAnimationFrame(update);
-    }
-    requestAnimationFrame(update);
+// ═══════════════════════════════════════════════════════════
+// STAT COUNT-UP + BARS
+// ═══════════════════════════════════════════════════════════
+function countUp(el, target, suffix, duration) {
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = Math.floor(ease * (suffix === 'K+' ? 6 : target));
+    el.textContent = suffix === 'K+' ? (p === 1 ? '6K+' : val + 'K') : val + (p === 1 ? suffix : '');
+    if (p < 1) requestAnimationFrame(step);
   }
+  requestAnimationFrame(step);
+}
 
-  const statsObserver = new IntersectionObserver((entries) => {
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl && 'IntersectionObserver' in window) {
+  const sio = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const nums = entry.target.querySelectorAll('.stat-number');
-        nums.forEach(n => {
-          const raw = n.textContent;
-          if (raw.includes('K')) animateCount(n, 6, 'K+');
-          else if (raw.includes('+')) animateCount(n, parseInt(raw), '+');
-          else animateCount(n, parseInt(raw));
-        });
-        // Animate stat bars
-        entry.target.querySelectorAll('.stat-bar-fill').forEach(bar => {
-          setTimeout(() => { bar.style.width = bar.dataset.pct + '%'; }, 300);
-        });
-        statsObserver.unobserve(entry.target);
-      }
+      if (!entry.isIntersecting) return;
+      entry.target.querySelectorAll('.stat-number').forEach(n => {
+        const raw = n.textContent;
+        const t   = parseInt(raw.replace(/\D/g,''));
+        const sfx = raw.includes('K+') ? 'K+' : (raw.includes('+') ? '+' : '');
+        countUp(n, t, sfx, 1500);
+      });
+      entry.target.querySelectorAll('.stat-bar-fill').forEach(bar => {
+        setTimeout(() => bar.style.width = bar.dataset.pct + '%', 400);
+      });
+      sio.unobserve(entry.target);
     });
-  }, { threshold: 0.5 });
+  }, {threshold: 0.6});
+  sio.observe(statsEl);
+}
 
-  const heroStats = document.querySelector('.hero-stats');
-  if (heroStats) statsObserver.observe(heroStats);
-
-  // ============================================================
-  // BINARY RAIN CANVAS
-  // ============================================================
-  const canvas = document.getElementById('binary-canvas');
-  const ctx = canvas.getContext('2d');
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-
-  const FONT_SIZE = 13;
-  const chars = '01010101001101000110100101100111011010010111010001100101001100000011000101100100011001010111001101101001011001110110111001100001011011000011000100110001001100000011000100110000';
-  
-  let columns = Math.floor(canvas.width / FONT_SIZE);
-  let drops = Array(columns).fill(0).map(() => Math.random() * -100);
-  let opacities = Array(columns).fill(0).map(() => Math.random() * 0.5 + 0.1);
-  let speeds = Array(columns).fill(0).map(() => Math.random() * 0.4 + 0.2);
-  let colors = Array(columns).fill(0).map(() => Math.random() > 0.85 ? '#00ff87' : '#00d4ff');
-
-  function drawBinaryRain() {
-    ctx.fillStyle = 'rgba(3, 6, 9, 0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    for (let i = 0; i < drops.length; i++) {
-      // Leading character — bright
-      ctx.font = `${FONT_SIZE}px "IBM Plex Mono", monospace`;
-      ctx.fillStyle = colors[i] === '#00ff87'
-        ? `rgba(0, 255, 135, ${opacities[i] * 2})`
-        : `rgba(0, 212, 255, ${opacities[i] * 2})`;
-
-      const head = Math.random() > 0.5 ? '1' : '0';
-      ctx.fillText(head, i * FONT_SIZE, drops[i] * FONT_SIZE);
-
-      // Trail characters — dimmer
-      for (let t = 1; t < 6; t++) {
-        const trailOpacity = opacities[i] * (1 - t / 7);
-        ctx.fillStyle = colors[i] === '#00ff87'
-          ? `rgba(0, 255, 135, ${trailOpacity})`
-          : `rgba(0, 212, 255, ${trailOpacity})`;
-        const trailChar = Math.random() > 0.5 ? '1' : '0';
-        ctx.fillText(trailChar, i * FONT_SIZE, (drops[i] - t) * FONT_SIZE);
-      }
-
-      if (drops[i] * FONT_SIZE > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-        opacities[i] = Math.random() * 0.5 + 0.05;
-        speeds[i] = Math.random() * 0.4 + 0.15;
-        colors[i] = Math.random() > 0.85 ? '#00ff87' : '#00d4ff';
-      }
-
-      drops[i] += speeds[i];
+// ═══════════════════════════════════════════════════════════
+// TEXT SCRAMBLE
+// ═══════════════════════════════════════════════════════════
+const CHARS = '01010101001100010011001001#$%&ABCDEFabcdef';
+function scramble(el, final, duration) {
+  const t0 = performance.now();
+  function step(now) {
+    const p = Math.min((now - t0) / duration, 1);
+    const revealed = Math.floor(p * final.length);
+    let out = final.slice(0, revealed);
+    for (let i = revealed; i < final.length; i++) {
+      out += CHARS[Math.floor(Math.random() * CHARS.length)];
     }
+    el.textContent = out;
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = final;
   }
+  requestAnimationFrame(step);
+}
 
-  setInterval(drawBinaryRain, 50);
+// Scramble comp card names on hover
+document.querySelectorAll('.comp-card').forEach(card => {
+  const el = card.querySelector('.comp-name');
+  if (!el) return;
+  const orig = el.textContent;
+  card.addEventListener('mouseenter', () => scramble(el, orig, 500));
+});
 
-  // Resize columns on window resize
-  window.addEventListener('resize', () => {
-    columns = Math.floor(canvas.width / FONT_SIZE);
-    drops = Array(columns).fill(0).map(() => Math.random() * -100);
-    opacities = Array(columns).fill(0).map(() => Math.random() * 0.5 + 0.1);
-    speeds = Array(columns).fill(0).map(() => Math.random() * 0.4 + 0.2);
-    colors = Array(columns).fill(0).map(() => Math.random() > 0.85 ? '#00ff87' : '#00d4ff');
-  });
+// Scramble metric values on hover
+document.querySelectorAll('.metric-cell').forEach(cell => {
+  const el = cell.querySelector('.metric-value');
+  if (!el) return;
+  const orig = el.textContent;
+  cell.addEventListener('mouseenter', () => scramble(el, orig, 400));
+});
 
-  // ============================================================
-  // PARTICLE FIELD in hero
-  // ============================================================
-  const particleField = document.getElementById('particle-field');
-  if (particleField) {
-    for (let i = 0; i < 40; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      p.style.cssText = `
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-        --pd: ${8 + Math.random() * 10}s;
-        --pdelay: ${Math.random() * 8}s;
-        --pop: ${0.15 + Math.random() * 0.4};
-        --pdx: ${(Math.random() - 0.5) * 80}px;
-        --pdy: ${(Math.random() - 0.5) * 80}px;
-        ${Math.random() > 0.7 ? 'background: var(--green); box-shadow: 0 0 4px var(--green);' : ''}
-      `;
-      particleField.appendChild(p);
-    }
-  }
-
-  // ============================================================
-  // DATA STREAM LINES on section borders
-  // ============================================================
-  document.querySelectorAll('.glow-divider').forEach((div, i) => {
-    const stream = document.createElement('div');
-    stream.className = 'data-stream';
-    stream.style.animationDelay = `${i * 0.7}s`;
-    div.style.position = 'relative';
-    div.style.overflow = 'hidden';
-    div.appendChild(stream);
-  });
-
-  // ============================================================
-  // TERMINAL TEXT SCRAMBLE EFFECT
-  // ============================================================
-  const scrambleChars = '01ABCDEFabcdef#$%&01001101';
-  function scrambleText(el, finalText, duration = 1000) {
-    let start = null;
-    function step(timestamp) {
-      if (!start) start = timestamp;
-      const progress = (timestamp - start) / duration;
-      if (progress < 1) {
-        const revealedLen = Math.floor(progress * finalText.length);
-        let display = finalText.slice(0, revealedLen);
-        for (let i = revealedLen; i < finalText.length; i++) {
-          display += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
-        }
-        el.textContent = display;
-        requestAnimationFrame(step);
-      } else {
-        el.textContent = finalText;
-      }
-    }
-    requestAnimationFrame(step);
-  }
-
-  // Scramble competition card names on hover
-  document.querySelectorAll('.comp-card').forEach(card => {
-    const nameEl = card.querySelector('.comp-name');
-    if (!nameEl) return;
-    const original = nameEl.textContent;
-    card.addEventListener('mouseenter', () => scrambleText(nameEl, original, 600));
-  });
-
-  // ============================================================
-  // SECTION LABEL TYPING EFFECT
-  // ============================================================
-  const labelObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const label = entry.target.querySelector('.section-label');
-        if (label && !label.dataset.typed) {
-          label.dataset.typed = true;
-          const text = label.textContent;
-          label.textContent = '';
-          let i = 0;
-          const type = () => {
-            if (i < text.length) {
-              label.textContent += text[i++];
-              setTimeout(type, 30);
-            }
-          };
-          setTimeout(type, 200);
-        }
-        labelObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-  document.querySelectorAll('section').forEach(s => labelObserver.observe(s));
-
-  // ============================================================
-  // METRIC CELLS — number decode on hover
-  // ============================================================
-  document.querySelectorAll('.metric-cell').forEach(cell => {
-    const val = cell.querySelector('.metric-value');
-    if (!val) return;
-    const original = val.textContent;
-    cell.addEventListener('mouseenter', () => scrambleText(val, original, 500));
-  });
-
-  // ============================================================
-  // NEON FLICKER on logo mark
-  // ============================================================
-  const logoMark = document.querySelector('.logo-mark');
-  if (logoMark) {
-    setInterval(() => {
-      if (Math.random() > 0.95) {
-        logoMark.style.boxShadow = 'none';
-        setTimeout(() => {
-          logoMark.style.boxShadow = '0 0 20px var(--cyan-glow-strong)';
-        }, 80);
-      }
-    }, 500);
-  }
-
-  // ============================================================
-  // BINARY STREAM ON HERO EYEBROW (subtle decode)
-  // ============================================================
-  const eyebrow = document.querySelector('.hero-eyebrow');
-  if (eyebrow) {
-    const spans = eyebrow.querySelectorAll('span');
-    spans.forEach(span => {
-      const orig = span.textContent;
-      // On page load, do a quick scramble reveal
-      setTimeout(() => scrambleText(span, orig, 800), 500);
-    });
-  }
-
-  // ============================================================
-  // CURSOR TRAIL with binary bits
-  // ============================================================
-  const trailPool = [];
-  const MAX_TRAIL = 8;
-  for (let i = 0; i < MAX_TRAIL; i++) {
-    const t = document.createElement('div');
-    t.style.cssText = `
-      position: fixed; pointer-events: none; z-index: 9998;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px; color: var(--cyan);
-      opacity: 0; transition: opacity 0.3s;
-      user-select: none;
+// ═══════════════════════════════════════════════════════════
+// PARTICLE FIELD
+// ═══════════════════════════════════════════════════════════
+const pField = document.getElementById('particle-field');
+if (pField) {
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const isGreen = Math.random() > 0.75;
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --pd:${8 + Math.random()*10}s;
+      --pdelay:${Math.random()*8}s;
+      --pop:${0.1 + Math.random()*0.4};
+      --pdx:${(Math.random()-0.5)*80}px;
+      --pdy:${(Math.random()-0.5)*80}px;
+      ${isGreen ? 'background:var(--green);box-shadow:0 0 4px var(--green);' : ''}
     `;
-    document.body.appendChild(t);
-    trailPool.push({ el: t, x: 0, y: 0, life: 0 });
+    pField.appendChild(p);
   }
+}
 
-  let trailIdx = 0;
-  document.addEventListener('mousemove', (e) => {
-    if (Math.random() > 0.7) {
-      const trail = trailPool[trailIdx % MAX_TRAIL];
-      trailIdx++;
-      trail.el.textContent = Math.random() > 0.5 ? '1' : '0';
-      trail.el.style.left = (e.clientX + (Math.random() - 0.5) * 20) + 'px';
-  
+// ═══════════════════════════════════════════════════════════
+// CURSOR BINARY TRAIL
+// ═══════════════════════════════════════════════════════════
+const pool = [];
+for (let i = 0; i < 10; i++) {
+  const d = document.createElement('div');
+  d.style.cssText = `
+    position:fixed;pointer-events:none;z-index:9999;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;
+    color:var(--cyan);opacity:0;transition:opacity 0.3s;
+    user-select:none;will-change:transform,opacity;
+  `;
+  document.body.appendChild(d);
+  pool.push({el:d, timer:null});
+}
+let pi = 0;
+document.addEventListener('mousemove', e => {
+  if (Math.random() > 0.65) {
+    const item = pool[pi++ % pool.length];
+    item.el.textContent = Math.random() > 0.5 ? '1' : '0';
+    item.el.style.left  = (e.clientX + (Math.random()-0.5)*24) + 'px';
+    item.el.style.top   = (e.clientY + (Math.random()-0.5)*24) + 'px';
+    item.el.style.color = Math.random() > 0.8 ? 'var(--green)' : 'var(--cyan)';
+    item.el.style.opacity = '0.7';
+    clearTimeout(item.timer);
+    item.timer = setTimeout(() => item.el.style.opacity = '0', 380);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// LOGO MARK FLICKER
+// ═══════════════════════════════════════════════════════════
+const lm = document.getElementById('logo-mark');
+if (lm) {
+  setInterval(() => {
+    if (Math.random() > 0.96) {
+      lm.style.boxShadow = 'none';
+      setTimeout(() => lm.style.boxShadow = '0 0 20px var(--cyan-glow-strong)', 80);
+    }
+  }, 400);
+}
+</script>
+</body>
+</html>
